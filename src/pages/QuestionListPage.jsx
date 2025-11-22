@@ -7,6 +7,7 @@ export default function QuestionsListPage() {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
+        console.log(getDomain());
         const res = await fetch(
           `${getDomain()}/api/question/questions`,
           {
