@@ -1,17 +1,5 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import CodeEditor from "./components/CodeEditor";
 import "./App.css";
-import Editor from "@monaco-editor/react";
-import SelectLang from "./components/SelectLang";
-import EditorFooter from "./components/EditorFooter";
-import { useSelector } from "react-redux";
-import EditorHead from "./components/EditorHead";
-import DescriptionHeader from "./components/DescriptionHeader";
-import Description from "./components/Description";
-import Console from "./components/Console";
-import { useEffect } from "react";
+
 import QuestionsListPage from "./pages/QuestionListPage";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -70,7 +58,7 @@ function App() {
               path="/questions"
               element={
                 // <ProtectedRoute>
-                  <QuestionsListPage />
+                <QuestionsListPage />
                 // </ProtectedRoute>
               }
             />
@@ -78,7 +66,7 @@ function App() {
               path="/questions/:id"
               element={
                 // <ProtectedRoute>
-                  <QuestionPage />
+                <QuestionPage />
                 // </ProtectedRoute>
               }
             />
@@ -87,7 +75,7 @@ function App() {
               path="/AI-Interview/practice"
               element={
                 // <ProtectedRoute>
-                  <AIinterviewPage />
+                <AIinterviewPage />
                 // </ProtectedRoute>
               }
             />
@@ -95,7 +83,7 @@ function App() {
               path="/AI-Interview"
               element={
                 // <ProtectedRoute>
-                  <AIInterviewHomePage />
+                <AIInterviewHomePage />
                 // </ProtectedRoute>
               }
             />
@@ -103,7 +91,7 @@ function App() {
               path="/AI-Interview/transcription"
               element={
                 // <ProtectedRoute>
-                  <AllTranscriptionsPage />
+                <AllTranscriptionsPage />
                 // </ProtectedRoute>
               }
             />
