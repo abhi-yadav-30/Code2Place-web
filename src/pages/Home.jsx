@@ -10,9 +10,11 @@ import {
   faCloud,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { getDomain } from "../utils/helper";
 
 const Home = () => {
   const navigate = useNavigate();
+  console.log(getDomain());
   return (
     <div className="overflow-y-auto h-[92vh]">
       <section className="w-full bg-[#262626] text-white flex flex-col items-center justify-center px-6 text-center min-h-[84vh] relative overflow-hidden">
