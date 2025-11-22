@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { getDomain } from "../utils/helper";
 
 const Submissions = ({ quesId }) => {
   const [submissions, setSubmissions] = useState([]);
@@ -8,7 +9,7 @@ const Submissions = ({ quesId }) => {
     const fetchSubmissions = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/submission/${quesId}`,
+          `${getDomain()}/api/submission/${quesId}`,
           {
             method: "GET",
             credentials: "include",

@@ -17,6 +17,7 @@ import {
 import { useEffect } from "react";
 import { useState } from "react";
 import { Button, Card, CardContent } from "../components/UIComponents";
+import { getDomain } from "../utils/helper";
 
 const Profile = () => {
   // These values will come from backend later
@@ -43,7 +44,7 @@ const Profile = () => {
   // };
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/user/profile", {
+    fetch(`${getDomain()}/api/user/profile`, {
       credentials: "include",
     })
       .then(async (res) => {
@@ -354,7 +355,7 @@ const Profil = () => {
   // };
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/user/profile", {
+    fetch(`${getDomain()}/api/user/profile`, {
       credentials: "include",
     })
       .then(async (res) => {

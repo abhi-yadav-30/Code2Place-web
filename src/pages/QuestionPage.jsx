@@ -7,6 +7,7 @@ import Description from "../components/Description";
 import Console from "../components/Console";
 import { useParams } from "react-router-dom";
 import Submissions from "../components/Submissions";
+import { getDomain } from "../utils/helper";
 
 const QuestionPage = () => {
   const [code, setCode] = useState(
@@ -24,7 +25,7 @@ const QuestionPage = () => {
     const func = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/question/questions/${id}`,
+         `${getDomain()}/api/question/questions/${id}`,
           {
             headers: {
               "Content-Type": "application/json",

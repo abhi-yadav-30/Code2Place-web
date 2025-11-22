@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { getDomain } from "../utils/helper";
 
 const AuthPage = () => {
   const navigate = useNavigate();
@@ -27,14 +28,12 @@ const AuthPage = () => {
   }, [error]);
   // Login
   const handleLogin = async (e) => {
-    
     e.preventDefault();
     setError("");
     setLoading(true);
 
-
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch(`${getDomain()}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -58,9 +57,8 @@ const AuthPage = () => {
       // alert("Login successful!");
       toast.success("Login successful!");
       navigate("/questions");
-
     } catch (err) {
-      console.log(err)
+      console.log(err);
       toast.error("Login failed");
       setError(err.response?.data?.msg || "Login failed");
     }
@@ -75,7 +73,7 @@ const AuthPage = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/register", {
+      const res = await fetch(`${getDomain()}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -99,7 +97,6 @@ const AuthPage = () => {
       // alert("Account created!");
       toast.success("Account created successfully!");
       setIsLogin(true);
-      
     } catch (err) {
       toast.error("Registration failed");
       setError(err.response?.data?.msg || "Registration failed");
@@ -156,7 +153,6 @@ const AuthPage = () => {
             type="email"
             placeholder="Email"
             value={form.email}
-      
             onChange={handleChange}
             className="w-full px-4 py-2 bg-[#262626] text-white rounded-lg border border-gray-600 focus:ring-2 focus:ring-blue-500"
           />

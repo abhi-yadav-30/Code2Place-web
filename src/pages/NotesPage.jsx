@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Card, CardContent } from "../components/UIComponents.jsx";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { getDomain } from "../utils/helper.js";
 
 export default function NotesPage() {
   const location = useLocation();
@@ -18,7 +19,7 @@ export default function NotesPage() {
     setLoading(true);
 
     fetch(
-      `http://localhost:5000/api/resources/getNotes?courseName=${courseName}&moduleNumber=${moduleNumber}`,
+     `${getDomain()}/api/resources/getNotes?courseName=${courseName}&moduleNumber=${moduleNumber}`,
       {
         credentials: "include",
       }

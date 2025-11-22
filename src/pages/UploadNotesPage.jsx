@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "../components/UIComponents";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-
+import { getDomain } from "../utils/helper";
 
 const UploadNotesPage = () => {
   const navigate = useNavigate();
@@ -17,17 +17,11 @@ const UploadNotesPage = () => {
     file: "",
   });
 
-
-
   const handleSubmit = async (e) => {
-  
     try {
       e.preventDefault();
       setIsUploading(true);
 
-      
-
-     
       let hasError = false;
 
       const newErrors = { courseName: "", moduleNumber: "", file: "" };
@@ -50,7 +44,7 @@ const UploadNotesPage = () => {
         setIsUploading(false);
         return;
       }
-        // return;
+      // return;
     } catch (erre) {
       setIsUploading(false);
       console.log(err);
@@ -62,14 +56,11 @@ const UploadNotesPage = () => {
       formData.append("moduleNumber", moduleNumber);
       formData.append("file", file);
 
-      const response = await fetch(
-        "http://localhost:5000/api/resources/upload",
-        {
-          method: "POST",
-          credentials: "include",
-          body: formData,
-        }
-      );
+      const response = await fetch(`${getDomain()}/api/resources/upload`, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
 
       let data = {};
       try {
@@ -84,7 +75,6 @@ const UploadNotesPage = () => {
         return;
       }
 
-     
       toast.success("Notes uploaded successfully!");
 
       // Clear fields
@@ -92,16 +82,12 @@ const UploadNotesPage = () => {
       setModuleNumber("");
       setFile(null);
       setErrors({ courseName: "", moduleNumber: "", file: "" });
-
     } catch (error) {
       console.error("Upload failed:", error);
-      
-    }finally{
+    } finally {
       setIsUploading(false);
     }
   };
-
-
 
   return (
     <div className="min-h-screen bg-[#262626] text-white p-6">

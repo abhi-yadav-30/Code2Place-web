@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getDomain } from "../utils/helper";
 
 export default function QuestionsListPage() {
   const [questions, setQuestions] = useState([]);
@@ -7,7 +8,7 @@ export default function QuestionsListPage() {
     const fetchQuestions = async () => {
       try {
         const res = await fetch(
-          "http://localhost:5000/api/question/questions",
+          `${getDomain()}/api/question/questions`,
           {
             headers: {
               "Content-Type": "application/json",

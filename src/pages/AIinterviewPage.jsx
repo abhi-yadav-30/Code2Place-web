@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
+import { getDomain } from "../utils/helper";
 
 const AIinterviewPage = () => {
   const location = useLocation();
@@ -55,7 +56,7 @@ const AIinterviewPage = () => {
       mimeType: "audio/webm; codecs=opus",
     });
     // console.log("dending ", userId)
-    const res = await fetch("http://localhost:5000/api/interview/start", {
+    const res = await fetch(`${getDomain()}/api/interview/start`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId }),
@@ -81,14 +82,11 @@ const AIinterviewPage = () => {
         const form = new FormData();
         form.append("audio", blob, "recording.webm");
 
-        const res = await fetch(
-          "http://localhost:5000/api/interview/transcribe",
-          {
-            method: "POST",
-            body: form,
-            credentials: "include",
-          }
-        );
+        const res = await fetch(`${getDomain()}/api/interview/transcribe`, {
+          method: "POST",
+          body: form,
+          credentials: "include",
+        });
 
         const data = await res.json();
         setAnswerText(data.text);
@@ -100,7 +98,7 @@ const AIinterviewPage = () => {
           sessionId,
         });
 
-        const aiRes = await fetch("http://localhost:5000/api/interview/ask", {
+        const aiRes = await fetch(`${getDomain()}/api/interview/ask`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -138,7 +136,7 @@ const AIinterviewPage = () => {
         recorderRef.current.stop();
       }
 
-      const res = await fetch("http://localhost:5000/api/interview/end", {
+      const res = await fetch(`${getDomain()}/api/interview/end`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -256,25 +254,13 @@ const AIinterviewPage = () => {
 
         <div className="flex flex-col md:flex-row gap-4">
           <div className="w-full md:w-[65%] max-h-[40vh] overflow-y-auto px-1">
-            {!feedback && (
+            {feedback && (
               <div>
                 <span className="text-xl font-semibold mb-4 text-amber-300 font-serif">
                   Feedback:{" "}
                 </span>
                 <span className="sm:text-lg md:text-xl font-semibold mb-4 text-gray-200">
-                  {feedback} Lorem ipsum dolor sit amet, consectetur adipisicing
-                  elit. Excepturi ab expedita adipisci necessitatibus, mollitia
-                  obcaecati eligendi perferendis eveniet molestias illo.
-                  Consequatur officiis inventore odio perferendis nesciunt
-                  laborum fugiat, ratione eum. Modi velit, quasi atque
-                  repudiandae amet sequi culpa, alias ipsam facilis quis
-                  corporis recusandae qui animi voluptates odit aut
-                  exercitationem! Cumque, quae tenetur magnam similique quaerat
-                  dolor maxime nam! Perferendis. Incidunt in recusandae atque
-                  sapiente fuga ducimus impedit distinctio cupiditate veritatis
-                  tempora, ipsa necessitatibus ad repellendus consectetur? Velit
-                  ab, deserunt, perspiciatis at sed facere temporibus incidunt
-                  quasi illum rem quisquam.
+                  {feedback}
                 </span>
               </div>
             )}
@@ -283,14 +269,7 @@ const AIinterviewPage = () => {
               Question:{" "}
             </span>
             <span className="text-base sm:text-lg md:text-xl font-semibold mb-4 text-emerald-300">
-              {question} Lorem ipsum dolor sit amet, consectetur adipisicing
-              elit. Quo laboriosam nam quibusdam numquam corrupti corporis
-              inventore fuga! Dolor excepturi error, magni quasi illo repellat
-              libero porro repudiandae, quaerat ipsa recusandae. Rem facilis
-              quia dolor velit deleniti doloribus laudantium sapiente minus,
-              accusantium id? Illo commodi deleniti temporibus voluptate
-              adipisci beatae esse eligendi repudiandae, ad provident, assumenda
-              ipsa, odit asperiores eaque in. Sequi a excepturi aspernatur?
+              {question}
             </span>
           </div>
 
@@ -300,14 +279,7 @@ w-full md:w-[34%] max-h-[40vh] overflow-y-auto mt-4 md:mt-0 md:ml-3"
           >
             <h3 className="text-lg font-bold  text-gray-200">Your Answer :</h3>
             <p className="text-gray-300 whitespace-pre-line sm:text-lg md:text-xl">
-              {answerText} Lorem ipsum dolor sit amet consectetur adipisicing
-              elit. Dolore beatae a voluptates cum vero commodi voluptatibus
-              accusamus culpa in labore numquam vitae odio architecto quidem
-              est, recusandae necessitatibus ducimus laudantium? Tenetur
-              laudantium aliquid illum sint similique nulla, rerum aut illo
-              adipisci placeat vitae deserunt ex dicta repudiandae alias eaque
-              magni temporibus quo aspernatur harum blanditiis amet quisquam
-              provident error! Reiciendis.
+              {answerText}
             </p>
           </div>
         </div>

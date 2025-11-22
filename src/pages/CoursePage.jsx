@@ -1,6 +1,7 @@
 import { Accordion, Button } from "../components/UIComponents.jsx";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getDomain } from "../utils/helper.js";
 
 export default function CoursesPage() {
   const [courses, setCourses] = useState([]);
@@ -13,7 +14,7 @@ export default function CoursesPage() {
   useEffect(() => {
     setLoading(true);
 
-    fetch("http://localhost:5000/api/resources/courses", {
+    fetch(`${getDomain()}/api/resources/courses`, {
       credentials: "include",
     })
       .then((res) => res.json())

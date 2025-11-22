@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import { DiffLevelToScoreMapping } from "../constants";
 import toast from "react-hot-toast";
+import { getDomain } from "../utils/helper";
 
 const EditorFooter = ({ code, queId, question }) => {
   const dispatch = useDispatch();
@@ -24,7 +25,7 @@ const EditorFooter = ({ code, queId, question }) => {
         toast.error("Empty source code!");
         return;
       }
-      const res = await fetch("http://localhost:5000/api/question/run", {
+      const res = await fetch(`${getDomain()}/api/question/run`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -57,7 +58,7 @@ const EditorFooter = ({ code, queId, question }) => {
       }
       dispatch(setIsSubmitting(true));
       const { userId } = JSON.parse(localStorage.getItem("user"));
-      const res = await fetch("http://localhost:5000/api/question/submit", {
+      const res = await fetch(`${getDomain()}/api/question/submit`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

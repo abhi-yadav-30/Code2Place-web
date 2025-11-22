@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import jsPDF from "jspdf";
+import { getDomain } from "../utils/helper";
 
 const AllTranscriptionsPage = () => {
   const { userId } = JSON.parse(localStorage.getItem("user"));
@@ -9,7 +10,7 @@ const AllTranscriptionsPage = () => {
   useEffect(() => {
     const fetchSessions = async () => {
       const res = await fetch(
-        `http://localhost:5000/api/interview/all/${userId}`,
+        `${getDomain()}/api/interview/all/${userId}`,
         {
           credentials: "include",
         }

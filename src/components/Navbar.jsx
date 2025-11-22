@@ -1,6 +1,7 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { getDomain } from "../utils/helper";
 
 const Navbar = () => {
   const location = useLocation();
@@ -36,7 +37,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    fetch("http://localhost:5000/api/auth/logout", {
+    fetch(`${getDomain()}/api/auth/logout`, {
       method: "POST",
       credentials: "include",
     });
