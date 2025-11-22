@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {useNavigate, useParams } from "react-router-dom";
 import jsPDF from "jspdf";
 import { Button } from "../components/UIComponents";
+import { getDomain } from "../utils/helper";
 
 const InterviewSessionPage = () => {
   const { sessionId } = useParams();
@@ -13,7 +14,7 @@ const InterviewSessionPage = () => {
   useEffect(() => {
     const fetchSession = async () => {
       const res = await fetch(
-        `//localhost:5000/api/interview/transcription/${sessionId}/user/${userId}`,
+        `${getDomain()}/api/interview/transcription/${sessionId}/user/${userId}`,
         {
           credentials: "include",
         }
