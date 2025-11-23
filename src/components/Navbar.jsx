@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { getDomain } from "../utils/helper";
-import InstallPWAButton from "./InstallPWAButton";
+
 
 const Navbar = () => {
   const location = useLocation();
@@ -13,6 +13,41 @@ const Navbar = () => {
   const dropdownRef = useRef(null);
 
   const user = JSON.parse(localStorage.getItem("user"));
+
+
+
+const [deferredPrompt, setDeferredPrompt] = useState(null);
+const [canInstall, setCanInstall] = useState(false);
+
+useEffect(() => {
+  const handler = (e) => {
+    e.preventDefault();
+    setDeferredPrompt(e);
+    setCanInstall(true);
+  };
+
+  window.addEventListener("beforeinstallprompt", handler);
+
+  return () => window.removeEventListener("beforeinstallprompt", handler);
+}, []);
+
+const installApp = async () => {
+  if (!deferredPrompt) return;
+
+  deferredPrompt.prompt();
+  const choice = await deferredPrompt.userChoice;
+
+  if (choice.outcome === "accepted") console.log("Installed");
+  setDeferredPrompt(null);
+  setCanInstall(false);
+};
+
+
+
+
+
+
+
 
   const isActive = (path) => {
     if (path === "/") {
@@ -82,9 +117,14 @@ const Navbar = () => {
               Resources
             </Link>
           </div>
-          <span className="hidden md:flex">
-            <InstallPWAButton />
-          </span>
+          {canInstall && (
+            <button
+              onClick={installApp}
+              className="hidden md:block bg-teal-600 hover:bg-teal-500 text-white px-4 py-2 rounded-lg shadow"
+            >
+              Install App
+            </button>
+          )}
         </div>
 
         {/* Profile + Login (Desktop) */}
@@ -143,7 +183,8 @@ const Navbar = () => {
           </button>
         )}
       </div>
-
+      {/* md:hidden bg-[#202020] border border-gray-600 rounded-lg px-3 pb-4 pt-2 */}
+      {/* mr-1 mt-55 top-0 flex flex-row-reverse text-gray-200 animate-slideDown */}
       {/* Mobile Menu */}
       {menuOpen && (
         <div
@@ -190,7 +231,14 @@ const Navbar = () => {
               Resources
             </Link>
 
-            <InstallPWAButton />
+            {canInstall && (
+              <button
+                onClick={installApp}
+                className="w-full bg-teal-600 hover:bg-teal-500 text-white px-4 py-2 rounded-lg shadow my-2"
+              >
+                Install App
+              </button>
+            )}
 
             {user ? (
               <>
