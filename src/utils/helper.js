@@ -9,6 +9,6 @@ console.log(hostname)
       return "http://192.168.1.37:5000";
     }
   } else {
-    return "https://code2place-api2.onrender.com";
+    return "https://web-production-40588.up.railway.app";
   }
 };
