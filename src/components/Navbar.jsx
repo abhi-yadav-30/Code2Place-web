@@ -82,8 +82,9 @@ const Navbar = () => {
               Resources
             </Link>
           </div>
-
-          <InstallPWAButton />
+          <span className="hidden md:flex">
+            <InstallPWAButton />
+          </span>
         </div>
 
         {/* Profile + Login (Desktop) */}
@@ -147,7 +148,7 @@ const Navbar = () => {
       {menuOpen && (
         <div
           className="  md:hidden  bg-[#202020] border border-gray-600 rounded-lg
-               px-3 pb-4 pt-2 mr-1 mt-40 top-0 flex flex-row-reverse  text-gray-200 animate-slideDown"
+               px-3 pb-4 pt-2 mr-1 mt-55 top-0 flex flex-row-reverse  text-gray-200 animate-slideDown"
         >
           <button
             className="md:hidden text-gray-300 flex items-center justify-center p-2
