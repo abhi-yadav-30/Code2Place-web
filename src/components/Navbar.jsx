@@ -2,6 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { getDomain } from "../utils/helper";
+import InstallPWAButton from "./InstallPWAButton";
 
 const Navbar = () => {
   const location = useLocation();
@@ -46,38 +47,43 @@ const Navbar = () => {
 
   return (
     <nav className="h-16 bg-[#1e1e1e] border-b border-gray-700 fixed top-0 left-0 w-full z-50 flex items-center shadow-lg shadow-black/20">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 w-full flex justify-between items-center">
+      <div className=" mx-auto px-4 md:px-8 w-full flex justify-between items-center ">
         {/* Logo */}
-        <Link to="/" className="text-2xl font-bold text-orange-500 underline">
+
+        <Link to="/" className="text-2xl font-bold text-orange-500 underline ">
           Code2Place
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex space-x-8 text-gray-300 font-medium">
-          <Link to="/" className={`${isActive("/")} hover:text-orange-300`}>
-            Home
-          </Link>
+        <div className="flex items-center gap-6">
+          <div className="hidden md:flex space-x-8 text-gray-300 font-medium">
+            <Link to="/" className={`${isActive("/")} hover:text-orange-300`}>
+              Home
+            </Link>
 
-          <Link
-            to="/questions"
-            className={`${isActive("/questions")} hover:text-orange-300`}
-          >
-            Questions
-          </Link>
+            <Link
+              to="/questions"
+              className={`${isActive("/questions")} hover:text-orange-300`}
+            >
+              Questions
+            </Link>
 
-          <Link
-            to="/ai-interview"
-            className={`${isActive("/ai-interview")} hover:text-orange-300`}
-          >
-            AI Interview
-          </Link>
+            <Link
+              to="/ai-interview"
+              className={`${isActive("/ai-interview")} hover:text-orange-300`}
+            >
+              AI Interview
+            </Link>
 
-          <Link
-            to="/resources"
-            className={`${isActive("/resources")} hover:text-orange-300`}
-          >
-            Resources
-          </Link>
+            <Link
+              to="/resources"
+              className={`${isActive("/resources")} hover:text-orange-300`}
+            >
+              Resources
+            </Link>
+          </div>
+
+          <InstallPWAButton />
         </div>
 
         {/* Profile + Login (Desktop) */}
@@ -182,6 +188,8 @@ const Navbar = () => {
             >
               Resources
             </Link>
+
+            <InstallPWAButton />
 
             {user ? (
               <>
