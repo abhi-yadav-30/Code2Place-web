@@ -21,131 +21,133 @@ import Profile from "./pages/Profile";
 
 function App() {
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className="flex flex-col h-screen  overflow-hidden bg-amber-500">
       <Router>
         <Navbar />
-        <div>
-          {/* padding so content does not hide behind navbar */}
-          <Toaster
-            position="top-center"
-            containerStyle={{
-              maxwidth:"90%",
-              marginTop: "60px", // ↓ moves it down
-            }}
-            gutter={8}
-            toastOptions={{
-              duration: 4000,
+        
+        {/* <div className="row-span-9 bg-amber-400"> */}
+        {/* padding so content does not hide behind navbar */}
+        <Toaster
+          position="top-center"
+          containerStyle={{
+            maxwidth: "90%",
+            marginTop: "60px", // ↓ moves it down
+          }}
+          gutter={8}
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: "#333",
+              color: "#fff",
+            },
+            success: {
               style: {
-                background: "#333",
-                color: "#fff",
+                background: "#16a34a",
               },
-              success: {
-                style: {
-                  background: "#16a34a",
-                },
+            },
+            error: {
+              style: {
+                background: "#dc2626",
               },
-              error: {
-                style: {
-                  background: "#dc2626",
-                },
-              },
-            }}
-          />
-          <div className="flex-1 overflow-y-auto pt-16">
-            <Routes>
-              <Route path="/Auth" element={<AuthPage />} />
-              <Route path="/" element={<Home />} />
-              <Route
-                path="/questions"
-                element={
-                  <ProtectedRoute>
-                    <QuestionsListPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/questions/:id"
-                element={
-                  <ProtectedRoute>
-                    <QuestionPage />
-                  </ProtectedRoute>
-                }
-              />
+            },
+          }}
+        />
 
-              <Route
-                path="/AI-Interview/practice"
-                element={
-                  <ProtectedRoute>
-                    <AIinterviewPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/AI-Interview"
-                element={
-                  <ProtectedRoute>
-                    <AIInterviewHomePage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/AI-Interview/transcription"
-                element={
-                  <ProtectedRoute>
-                    <AllTranscriptionsPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/AI-Interview/transcription/view/:sessionId"
-                element={
-                  <ProtectedRoute>
-                    <InterviewSessionPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/resources"
-                element={
-                  <ProtectedRoute>
-                    <ResourcesHome />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/resources/upload"
-                element={
-                  <ProtectedRoute>
-                    <UploadNotesPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/resources/view"
-                element={
-                  <ProtectedRoute>
-                    <CoursesPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/resources/view/notes"
-                element={
-                  <ProtectedRoute>
-                    <NotesPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </div>
+        <div className="flex-1 pt-16 h-full">
+          <Routes>
+            <Route path="/Auth" element={<AuthPage />} />
+            <Route path="/" element={<Home />} />
+            <Route
+              path="/questions"
+              element={
+                <ProtectedRoute>
+                  <QuestionsListPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/questions/:id"
+              element={
+                <ProtectedRoute>
+                  <QuestionPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/AI-Interview/practice"
+              element={
+                <ProtectedRoute>
+                  <AIinterviewPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/AI-Interview"
+              element={
+                <ProtectedRoute>
+                  <AIInterviewHomePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/AI-Interview/transcription"
+              element={
+                <ProtectedRoute>
+                  <AllTranscriptionsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/AI-Interview/transcription/view/:sessionId"
+              element={
+                <ProtectedRoute>
+                  <InterviewSessionPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/resources"
+              element={
+                <ProtectedRoute>
+                  <ResourcesHome />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/resources/upload"
+              element={
+                <ProtectedRoute>
+                  <UploadNotesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/resources/view"
+              element={
+                <ProtectedRoute>
+                  <CoursesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/resources/view/notes"
+              element={
+                <ProtectedRoute>
+                  <NotesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+          {/* </div> */}
         </div>
       </Router>
     </div>

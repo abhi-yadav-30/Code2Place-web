@@ -22,7 +22,7 @@ const AIinterviewPage = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [recordTime, setRecordTime] = useState(0);
   const [camera, setCamera] = useState(false);
-  const [generatedAns , setGeneratedAns] = useState("");
+  const [generatedAns, setGeneratedAns] = useState("");
 
   useEffect(() => {
     let interval;
@@ -41,16 +41,13 @@ const AIinterviewPage = () => {
   };
 
   const startCamera = async () => {
-
-
-
     const res = await fetch(`${getDomain()}/api/interview/start`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId }),
       credentials: "include",
     });
-    
+
     const data = await res.json();
     // toast.error(await JSON.stringify(data));
     if (data?.error) {
@@ -77,7 +74,7 @@ const AIinterviewPage = () => {
       mimeType: "audio/webm; codecs=opus",
     });
     // console.log("dending ", userId)
-    
+
     setSessionId(data.sessionId);
     setCamera(true);
   };
@@ -127,7 +124,7 @@ const AIinterviewPage = () => {
           body: JSON.stringify({
             answer: data.text,
             prvQuestion: question,
-            prvAns:generatedAns,
+            prvAns: generatedAns,
             userId,
             sessionId,
             role,
@@ -216,8 +213,8 @@ const AIinterviewPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#262626] text-white flex flex-col items-center px-6 py-5">
-      <div className=" w-full  h-[86vh] overflow-y-auto md:overflow-hidden max-w-7xl bg-[#1f1f1f] rounded-2xl shadow-lg p-3 ms:p-8 sm:pt-10 border border-gray-700">
+    <div className="h-full bg-[#262626] text-white flex flex-col items-center px-6 py-5">
+      <div className=" w-full  h-full overflow-y-auto lg:overflow-hidden max-w-7xl bg-[#1f1f1f] rounded-2xl shadow-lg p-3 ms:p-8 sm:pt-10 border border-gray-700">
         <h1 className="text-xl md:text-3xl font-bold mb-2 sm:mb-6 text-center">
           AI Mock Interview
         </h1>
@@ -290,7 +287,7 @@ const AIinterviewPage = () => {
         </div>
 
         <div className="flex flex-col md:flex-row gap-4">
-          <div className="w-full md:w-[65%] sm:max-h-[40vh] overflow-y-auto px-1">
+          <div className="w-full md:w-[65%]  sm:max-h-[37vh] overflow-y-auto px-1">
             {feedback && (
               <div>
                 <span className="text-xl font-semibold mb-4 text-amber-300 font-serif">
@@ -303,20 +300,25 @@ const AIinterviewPage = () => {
             )}
 
             <span className="text-xl font-semibold mb-4 text-amber-300 font-serif">
-              Question:{" "}
+              Question:
             </span>
             <span className="text-base sm:text-lg md:text-xl font-semibold mb-4 text-emerald-300">
-              {question}
+              {question} Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellendus libero, possimus velit eligendi laborum sint quae itaque sit hic dolore atque, iste laboriosam quam dolor praesentium doloremque animi minus vel.
+              Qui veritatis, sequi dolor facere ratione natus? Nulla veniam minus delectus sunt tempora debitis ut assumenda fuga, doloribus consequuntur eligendi, maiores, asperiores aperiam! Facere tempora non cupiditate voluptate accusantium ipsam?
+              Beatae consequuntur tempora aut ab nulla incidunt, quos nostrum eum, sapiente veniam, exercitationem blanditiis qui perferendis et cumque. Assumenda consequuntur earum ad optio voluptatibus voluptate corrupti officia hic atque ex? Lorem ipsum dolor sit, amet consectetur adipisicing elit. Cum eaque laborum distinctio labore. In, dignissimos. Cupiditate ullam ad, laborum esse, asperiores debitis eligendi dolore veniam unde magni, voluptatem at nisi!
+              Molestias assumenda ratione placeat sit repellendus labore earum, soluta tempora velit nesciunt harum fugit dolores consequuntur cupiditate officia facere laborum natus voluptas eligendi ullam alias quidem ad quod quibusdam. Nostrum?
             </span>
           </div>
 
           <div
             className="bg-[#2c2c2c] p-4 rounded-xl border border-gray-700 shadow-md 
-w-full md:w-[34%] max-h-[40vh] overflow-y-auto mt-4 md:mt-0 md:ml-3"
+w-full md:w-[34%] md:max-h-[37vh] overflow-y-auto mt-4 md:mt-0 md:ml-3"
           >
             <h3 className="text-lg font-bold  text-gray-200">Your Answer :</h3>
             <p className="text-gray-300 whitespace-pre-line sm:text-lg md:text-xl">
-              {answerText}
+              {answerText} Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reprehenderit numquam, veritatis laborum facere praesentium sint recusandae. Repudiandae, error inventore. Exercitationem perspiciatis vitae officiis ducimus perferendis eligendi culpa debitis unde quae!
+              Id, laboriosam voluptates repudiandae quidem quasi doloribus provident! Nisi voluptatem soluta quo! Ipsam ratione numquam dolorum quae modi iusto doloribus quia vel accusamus laboriosam deserunt vero quibusdam, necessitatibus adipisci et!
+              Reiciendis, vitae a? Blanditiis tenetur ipsum mollitia, rerum quae tempora est earum odio culpa deleniti facere asperiores consequuntur. Eum sit magnam quasi, incidunt nobis adipisci quia obcaecati aliquam accusantium quibusdam?
             </p>
           </div>
         </div>

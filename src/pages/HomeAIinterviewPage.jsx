@@ -32,7 +32,6 @@ const AIInterviewHomePage = () => {
     to-orange-500/60"
     >
       {/* SUBTLE CLASSIC GRADIENT BACKGROUND */}
-     
 
       {/* FADE v1 – soft dark overlay for classic look */}
       {/* <div className="absolute inset-0 bg-[#262626]/60"></div> */}
@@ -40,7 +39,6 @@ const AIInterviewHomePage = () => {
       {/* CONTENT */}
       <div className="relative z-10">
         <div className="max-w-3xl mx-auto mt-10 px-4 text-white">
-      
           <h1 className="text-3xl font-bold text-center mb-6">
             AI Mock Interview
           </h1>
@@ -62,7 +60,6 @@ const AIInterviewHomePage = () => {
               </li>
             </ul>
 
-           
             <button
               onClick={() => setOpenModal(true)}
               className="w-full mt-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition cursor-pointer"
@@ -80,13 +77,11 @@ const AIInterviewHomePage = () => {
             </button>
           </div>
 
-     
           {openModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center px-4">
-              <div className="bg-[#1e1e1e] p-6 rounded-xl w-full max-w-lg border border-gray-700 shadow-xl">
+            <div className=" overflow-y-auto lg:overflow-hidden fixed mt-16 pt-10 inset-0 bg-black bg-opacity-60 flex justify-center items-center px-4">
+              <div className="bg-[#1e1e1e] p-6 rounded-xl w-full max-w-lg border border-gray-700 shadow-xl mb-auto">
                 <h2 className="text-xl font-semibold mb-4">Interview Setup</h2>
 
-             
                 <div className="mb-4">
                   <div className="flex items-center justify-between">
                     <label className="block text-sm mb-1">
@@ -107,7 +102,7 @@ const AIInterviewHomePage = () => {
                     onChange={(e) => setRole(e.target.value)}
                   />
                 </div>
-           
+
                 <label className="block text-sm mb-1">
                   Job Description (optional)
                 </label>
@@ -119,7 +114,6 @@ const AIInterviewHomePage = () => {
                   onChange={(e) => setJobDesc(e.target.value)}
                 />
 
-        
                 <label className="block text-sm mb-1">Round</label>
                 <select
                   className="w-full p-2 rounded bg-[#2c2c2c] border border-gray-600 mb-4"
@@ -131,7 +125,6 @@ const AIInterviewHomePage = () => {
                   <option value="Managerial">Managerial</option>
                 </select>
 
-             
                 <label className="block text-sm mb-1">Difficulty</label>
                 <select
                   className="w-full p-2 rounded bg-[#2c2c2c] border border-gray-600 mb-4"
@@ -143,7 +136,6 @@ const AIInterviewHomePage = () => {
                   <option value="hard">Hard</option>
                 </select>
 
-        
                 <div className="flex justify-between mt-5">
                   <button
                     onClick={() => setOpenModal(false)}
