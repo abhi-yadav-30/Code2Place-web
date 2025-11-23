@@ -11,8 +11,8 @@ const AuthPage = () => {
   const [form, setForm] = useState({
     name: "",
     username: "",
-    email: "abhi@gamil.com",
-    password: "abhi",
+    email: "",
+    password: "",
   });
 
   const [loading, setLoading] = useState(false);
