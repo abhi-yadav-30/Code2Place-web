@@ -26,7 +26,7 @@ const AIInterviewHomePage = () => {
 
   return (
     <div
-      className="min-h-screen relative overflow-hidden bg-[#262626] bg-linear-to-br
+      className="h-[94vh] relative overflow-y-auto bg-[#262626] bg-linear-to-br
     from-[#0f0f0f]
     via-[#1a1a1a]
     to-orange-500/60"
@@ -74,7 +74,7 @@ const AIInterviewHomePage = () => {
           <div className="flex justify-center mt-6">
             <button
               onClick={() => navigate("/ai-interview/transcription")}
-              className="py-2 px-4 bg-green-600 hover:bg-gray-600 rounded-lg text-sm font-medium transition cursor-pointer"
+              className="mb-20 py-2 px-4 bg-green-600 hover:bg-gray-600 rounded-lg text-sm font-medium transition cursor-pointer"
             >
               View All Transcriptions
             </button>

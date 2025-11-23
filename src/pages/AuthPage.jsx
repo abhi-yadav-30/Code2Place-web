@@ -33,6 +33,7 @@ const AuthPage = () => {
     setLoading(true);
 
     try {
+      // console.log("helooo");
       const res = await fetch(`${getDomain()}/api/auth/login`, {
         method: "POST",
         headers: {
@@ -46,7 +47,14 @@ const AuthPage = () => {
       });
 
       const data = await res.json();
-
+      if (data?.error) {
+        console.log("error : ", data?.error);
+        toast.error(data?.error);
+        // navigate("/auth");
+        return;
+      }
+      console.log(data);
+      // console.log("hello");
       if (!res.ok) {
         setError(data.msg || "Login failed");
         setLoading(false);
@@ -60,6 +68,8 @@ const AuthPage = () => {
     } catch (err) {
       console.log(err);
       toast.error("Login failed");
+      // console.log("ajbdkjbasdcabksbcvhaks")
+      // console.log("hello");
       setError(err.response?.data?.msg || "Login failed");
     }
 
@@ -88,6 +98,12 @@ const AuthPage = () => {
       });
 
       const data = await res.json();
+      if (data?.error) {
+        console.log("error : ", data?.error);
+        toast.error(data?.error);
+        // navigate("/auth");
+        return;
+      }
       if (!res.ok) {
         setError(data.msg || "registration failed");
         setLoading(false);

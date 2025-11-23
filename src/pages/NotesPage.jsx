@@ -19,13 +19,19 @@ export default function NotesPage() {
     setLoading(true);
 
     fetch(
-     `${getDomain()}/api/resources/getNotes?courseName=${courseName}&moduleNumber=${moduleNumber}`,
+      `${getDomain()}/api/resources/getNotes?courseName=${courseName}&moduleNumber=${moduleNumber}`,
       {
         credentials: "include",
       }
     )
       .then((res) => res.json())
       .then((data) => {
+        if (data?.error) {
+          console.log("error : ", data?.error);
+          toast.error(data?.error);
+          // navigate("/auth");
+          // return;
+        }
         setNotes(data || []);
         setLoading(false);
       })
@@ -46,12 +52,12 @@ export default function NotesPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#262626] text-white p-6">
+    <div className="h-[91vh] bg-[#262626] text-white p-6 overflow-y-auto">
       <Button className="mb-4" onClick={() => navigate(-1)}>
         Back
       </Button>
 
-      <h2 className="text-2xl font-bold mb-4">
+      <h2 className="text-lg sm:text-2xl font-bold mb-4">
         {courseName} - Module {moduleNumber}
       </h2>
 
@@ -93,11 +99,14 @@ export default function NotesPage() {
             <Card>
               <CardContent>
                 <iframe
-                  src={note.fileUrl}
+                  src={`https://docs.google.com/gview?embedded=true&url=${note.fileUrl}`}
                   className="w-full h-40 rounded-md"
                 ></iframe>
+                
 
-                <p className="text-lg font-semibold mt-2">{note.courseName}</p>
+                <p className="sm:text-lg font-semibold mt-2">
+                  {note.courseName}
+                </p>
 
                 {note.moduleNumber && (
                   <p className="text-sm">Module: {note.moduleNumber}</p>

@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { getDomain } from "../utils/helper";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Submissions = ({ quesId }) => {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSubmissions = async () => {
@@ -17,9 +20,10 @@ const Submissions = ({ quesId }) => {
         );
 
         const data = await res.json();
-
-        if (!res.ok) {
-          console.error("Error:", data.msg);
+        if (data?.error) {
+          console.log("error : ", data?.error);
+          toast.error(data?.error);
+          // navigate("/auth");
           return;
         }
 

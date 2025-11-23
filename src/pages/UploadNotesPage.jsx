@@ -65,6 +65,14 @@ const UploadNotesPage = () => {
       let data = {};
       try {
         data = await response.json();
+        console.log(data)
+         if (data?.error) {
+           console.log("error : ", data?.error);
+           toast.error(data?.error);
+           // navigate("/auth");
+           return;
+         }
+        
         console.log(data);
       } catch {
         console.warn("No JSON returned");
@@ -176,11 +184,11 @@ const UploadNotesPage = () => {
                 hover:bg-[#252525]
               "
               >
-                <span className="text-sm text-gray-300">
+                <span className="text-sm text-gray-300  w-35 sm:w-full overflow-x-auto">
                   {file ? file.name : "Choose PDF file"}
                 </span>
 
-                <span className="text-orange-500 text-sm font-medium">
+                <span className="text-orange-500 text-sm font-medium  ">
                   Browse
                 </span>
 

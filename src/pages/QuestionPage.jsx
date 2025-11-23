@@ -5,15 +5,17 @@ import EditorFooter from "../components/EditorFooter";
 import DescriptionHeader from "../components/DescriptionHeader";
 import Description from "../components/Description";
 import Console from "../components/Console";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Submissions from "../components/Submissions";
 import { getDomain } from "../utils/helper";
+import toast from "react-hot-toast";
 
 const QuestionPage = () => {
   const [code, setCode] = useState(
     `// Write your code \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n `
   );
   const [activeTab, setActiveTab] = useState("description");
+  const navigate = useNavigate()
 
   const { id } = useParams();
   const handleCode = (code) => {
@@ -34,10 +36,14 @@ const QuestionPage = () => {
           }
         );
         const data = await response.json();
-        if (!response.ok) {
-          console.log("error: ", data.msg);
+        if (data?.error) {
+          console.log("error : ", data?.error);
+          toast.error(data?.error);
+          // navigate("/auth");
           return;
         }
+        // console.log("resposnce : ", data);
+        
 
         setQuestion(data.data);
       } catch (error) {
@@ -47,7 +53,7 @@ const QuestionPage = () => {
     func();
   }, []);
  return (
-   <div className="w-full h-[calc(100vh-64px)] flex flex-col md:flex-row overflow-hidden bg-[#7f7f7f]">
+   <div className="w-full h-[calc(100vh-64px)]  flex flex-col md:flex-row overflow-hidden bg-[#7f7f7f]">
      {/* LEFT CODE EDITOR */}
      <div className="w-full md:w-1/2 h-[50vh] md:h-full flex flex-col border-b md:border-b-0 md:border-r border-gray-300">
        <EditorHead />

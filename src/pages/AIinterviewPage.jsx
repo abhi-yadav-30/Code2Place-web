@@ -40,11 +40,31 @@ const AIinterviewPage = () => {
   };
 
   const startCamera = async () => {
+
+
+
+    const res = await fetch(`${getDomain()}/api/interview/start`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId }),
+      credentials: "include",
+    });
+    
+    const data = await res.json();
+    // toast.error(await JSON.stringify(data));
+    if (data?.error) {
+      console.log("error : ", data?.error);
+      toast.error(data?.error);
+      // navigate("/auth");
+      return;
+    }
+
     const videoStream = await navigator.mediaDevices.getUserMedia({
       video: true,
       audio: false,
     });
 
+    // toast.error(await JSON.stringify(videoStream));
     videoRef.current.srcObject = videoStream;
     videoRef.current.play();
 
@@ -56,13 +76,7 @@ const AIinterviewPage = () => {
       mimeType: "audio/webm; codecs=opus",
     });
     // console.log("dending ", userId)
-    const res = await fetch(`${getDomain()}/api/interview/start`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId }),
-      credentials: "include",
-    });
-    const data = await res.json();
+    
     setSessionId(data.sessionId);
     setCamera(true);
   };
@@ -89,6 +103,12 @@ const AIinterviewPage = () => {
         });
 
         const data = await res.json();
+        if (data?.error) {
+          console.log("error : ", data?.error);
+          toast.error(data?.error);
+          // navigate("/auth");
+          return;
+        }
         setAnswerText(data.text);
 
         console.log({
@@ -115,10 +135,17 @@ const AIinterviewPage = () => {
         });
 
         const ai = await aiRes.json();
-        if (ai.error) {
-          console.log("error occured : ", ai.error);
+        if (ai?.error) {
+          console.log("error : ", ai?.error);
+          toast.error(ai?.error);
+          // navigate("/auth");
           return;
         }
+
+        // if (ai.error) {
+        //   console.log("error occured : ", ai.error);
+        //   return;
+        // }
         setQuestion(ai.nextQuestion);
         setFeedback(ai.shortFeedback);
       };
@@ -147,7 +174,12 @@ const AIinterviewPage = () => {
         credentials: "include",
       });
       const data = await res.json();
-      console.log(data);
+      if (data?.error) {
+        console.log("error : ", data?.error);
+        toast.error(data?.error);
+        // navigate("/auth");
+        return;
+      }
 
       setIsRecording(false);
       setRecordTime(0);
@@ -180,23 +212,23 @@ const AIinterviewPage = () => {
 
   return (
     <div className="min-h-screen bg-[#262626] text-white flex flex-col items-center px-6 py-5">
-      <div className=" w-full h-[86vh] overflow-y-auto md:overflow-hidden max-w-7xl bg-[#1f1f1f] rounded-2xl shadow-lg p-8 pt-10 border border-gray-700">
-        <h1 className="text-3xl font-bold mb-6 text-center">
+      <div className=" w-full  h-[86vh] overflow-y-auto md:overflow-hidden max-w-7xl bg-[#1f1f1f] rounded-2xl shadow-lg p-3 ms:p-8 sm:pt-10 border border-gray-700">
+        <h1 className="text-xl md:text-3xl font-bold mb-2 sm:mb-6 text-center">
           AI Mock Interview
         </h1>
 
-        <div className="flex flex-col md:flex-row justify-center items-center gap-10 lg:gap-52 mb-6">
+        <div className="flex flex-col md:flex-row justify-center items-center gap-3 sm:gap-10 lg:gap-52 mb-6">
           <video
             ref={videoRef}
-            className="rounded-xl w-full max-w-[300px] sm:max-w-[350px] h-[220px] bg-black border border-gray-600 shadow-lg transform scale-x-[-1]"
+            className="rounded-xl sm:w-full max-w-[200px] sm:max-w-[350px]  sm:h-[220px] bg-black border border-gray-600 shadow-lg transform scale-x-[-1]"
           ></video>
 
           <div className="h-auto w-full sm:w-[67vh] flex flex-col justify-center items-center">
-            <div className="flex flex-wrap justify-center gap-4 mb-4 ">
+            <div className="flex flex-wrap justify-center gap-4 mb-2 sm:mb-4 ">
               <button
                 onClick={startCamera}
                 disabled={camera}
-                className=" bg-indigo-700 hover:bg-indigo-600 flex items-center gap-2 px-3 md:px-6 py-2 rounded-xl cursor-pointer
+                className="z-70   bg-indigo-700 hover:bg-indigo-600 flex items-center gap-2 px-3 md:px-6 py-2 rounded-xl cursor-pointer
           disabled:opacity-60 disabled:bg-indigo-300 disabled:cursor-not-allowed disabled:text-gray-100 text-sm lg:text-lg"
               >
                 Start Camera
@@ -253,7 +285,7 @@ const AIinterviewPage = () => {
         </div>
 
         <div className="flex flex-col md:flex-row gap-4">
-          <div className="w-full md:w-[65%] max-h-[40vh] overflow-y-auto px-1">
+          <div className="w-full md:w-[65%] sm:max-h-[40vh] overflow-y-auto px-1">
             {feedback && (
               <div>
                 <span className="text-xl font-semibold mb-4 text-amber-300 font-serif">

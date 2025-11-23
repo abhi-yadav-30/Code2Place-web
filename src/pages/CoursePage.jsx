@@ -2,6 +2,7 @@ import { Accordion, Button } from "../components/UIComponents.jsx";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getDomain } from "../utils/helper.js";
+import toast from "react-hot-toast";
 
 export default function CoursesPage() {
   const [courses, setCourses] = useState([]);
@@ -18,7 +19,12 @@ export default function CoursesPage() {
       credentials: "include",
     })
       .then((res) => res.json())
-      .then((data) => {
+      .then(async(data) => {
+      if (data?.error) {
+        console.log("error : ", data?.error);
+        toast.error(data?.error);
+        // navigate("/auth");
+      }
         setCourses(data.courses || []);
         setLoading(false);
       });

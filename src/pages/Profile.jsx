@@ -18,6 +18,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { Button, Card, CardContent } from "../components/UIComponents";
 import { getDomain } from "../utils/helper";
+import toast from "react-hot-toast";
 
 const Profile = () => {
   // These values will come from backend later
@@ -49,7 +50,13 @@ const Profile = () => {
     })
       .then(async (res) => {
         const data = await res.json();
-        console.log(data);
+        if (data?.error) {
+          console.log("error : ", data?.error);
+          toast.error(data?.error);
+          // navigate("/auth");
+          return;
+        }
+        // console.log(data);
         setUser(data);
         // console.log(data)
         setquestions(data.recentlySolved.slice(0, 3));
@@ -57,7 +64,15 @@ const Profile = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        // console.log("error :" ,err);
+         if (err) {
+           console.log("error : ", err);
+           toast.error(err);
+           // navigate("/auth");
+          //  return;
+          // setLoading(false);
+          // consolelog("akljfnkljabfk")
+         }
         setLoading(false);
       });
   }, []);
@@ -66,17 +81,17 @@ const Profile = () => {
   );
 
   return (
-    <div className="h-[92vh] bg-[#1c1c1c] text-white p-6 pb-20 overflow-y-auto ">
+    <div className="h-[92vh] bg-[#1c1c1c] text-white p-2 sm:p-6 pb-20 overflow-y-auto">
       {/* HEADER */}
-      <div className="bg-[#242424] p-8 rounded-2xl shadow-lg border border-gray-700 mb-10">
-        <div className="flex items-center justify-between gap-6">
+      <div className="bg-[#242424] p-2 sm:p-8 rounded-2xl shadow-lg border border-gray-700  mb-4 sm:mb-10">
+        <div className="flex flex-col sm:flex-row  items-center justify-between sm:gap-6">
           {/* LEFT SIDE (Avatar + Info) */}
-          <div className="flex items-center gap-6 w-[90vh]">
-            <div className="bg-orange-500 w-25 h-20 rounded-full  flex items-center justify-center text-4xl">
+          <div className="flex items-center justify-between  sm:gap-6 w-60 sm:w-80 h-25 ">
+            <div className="bg-orange-500  w-15 h-14 sm:w-20 sm:h-20 rounded-full  flex items-center justify-center text-2xl sm:text-4xl">
               <FontAwesomeIcon icon={faUser} />
             </div>
 
-            <div className="w-full">
+            <div className="w-50 flex flex-col items-center ">
               {loading ? (
                 <>
                   <ShimmerBox h="h-6 w-40 mb-3" />
@@ -84,10 +99,14 @@ const Profile = () => {
                   <ShimmerBox h="h-4 w-60" />
                 </>
               ) : (
-                <>
-                  <h1 className="text-3xl font-bold">{user.username}</h1>
-                  <p className="text-gray-400">{user.name}</p>
-                  <p className="text-gray-500 text-sm mt-1">
+                <div className="">
+                  <h1 className="text-xl sm:text-3xl font-bold">
+                    {user.username}
+                  </h1>
+                  <p className="text-sm sm:text-md text-gray-400">
+                    {user.name}
+                  </p>
+                  <p className="text-sm sm:text-md text-gray-500 ">
                     Joined:{" "}
                     {user.createdAt
                       ? new Date(user.createdAt).toLocaleDateString("en-US", {
@@ -97,7 +116,7 @@ const Profile = () => {
                         })
                       : ""}
                   </p>
-                </>
+                </div>
               )}
             </div>
           </div>
@@ -107,7 +126,7 @@ const Profile = () => {
             {loading ? (
               <ShimmerBox h="h-10 w-24" />
             ) : (
-              <div className="bg-[#242424] p-8 rounded-xl border border-gray-700 text-center w-[30vh]">
+              <div className="bg-[#242424] p-3 sm:p-8 rounded-xl border border-gray-700 text-center w-[30vh]">
                 <FontAwesomeIcon
                   icon={faTrophy}
                   className="text-4xl text-orange-500 mb-1"
@@ -132,7 +151,7 @@ const Profile = () => {
       </div>
 
       {/* STATS GRID */}
-      <div className=" gap-8 max-w-6xl mx-auto justify-center flex flex-wrap">
+      <div className=" gap-3 sm:gap-8 max-w-6xl mx-auto justify-center flex flex-wrap">
         {/* STAT BOX TEMPLATE */}
         {[
           {
@@ -173,7 +192,7 @@ const Profile = () => {
         ].map((item, index) => (
           <div
             key={index}
-            className="bg-[#242424] p-8 rounded-xl border border-gray-700 text-center w-[30vh]"
+            className="bg-[#242424] p-4 sm:p-8 rounded-xl border border-gray-700 text-center w-40 sm:w-[30vh]"
           >
             <FontAwesomeIcon
               icon={item.icon}
@@ -194,8 +213,8 @@ const Profile = () => {
 
       {/* RECENT ACTIVITY */}
       {Array.isArray(user.recentlySolved) && user.recentlySolved.length > 0 && (
-        <div className="bg-[#242424] p-8 rounded-2xl border border-gray-700 mt-14 max-w-5xl mx-auto shadow-lg">
-          <h2 className="text-2xl font-semibold mb-6 text-orange-400">
+        <div className="bg-[#242424] p-2 px-4 sm:p-8 sm:px-8 rounded-2xl border border-gray-700 mt-14 max-w-5xl mx-auto shadow-lg">
+          <h2 className="text-xl sm:text-2xl font-semibold mb-6 text-orange-400">
             Questions Solved By You
           </h2>
 
@@ -249,8 +268,8 @@ const Profile = () => {
           </div>
         </div>
       )}
-      <div className="bg-[#242424] p-8 rounded-2xl border border-gray-700 mt-14 max-w-5xl mx-auto shadow-lg">
-        <h2 className="text-2xl font-semibold mb-6 text-orange-400">
+      <div className="bg-[#242424] p-2 px-4 sm:p-8 sm:px-8 rounded-2xl border border-gray-700 mt-14 max-w-5xl mx-auto shadow-lg">
+        <h2 className="text-xl sm:text-2xl font-semibold mb-6 text-orange-400">
           Resources Uploaded By You
         </h2>
 
@@ -275,11 +294,11 @@ const Profile = () => {
                     <Card>
                       <CardContent>
                         <iframe
-                          src={note.fileUrl}
+                          src={`https://docs.google.com/gview?embedded=true&url=${note.fileUrl}`}
                           className="w-full h-30 rounded-md"
                         ></iframe>
 
-                        <p className="text-lg font-semibold mt-2">
+                        <p className="text-md sm:text-lg font-semibold mt-2">
                           {note.courseName}
                         </p>
 
@@ -340,117 +359,117 @@ export default Profile;
 //   faArrowRight,
 // } from "@fortawesome/free-solid-svg-icons";
 
-const Profil = () => {
-  // These values will come from backend later
-  const [user, setUser] = useState({});
+// const Profil = () => {
+//   // These values will come from backend later
+//   const [user, setUser] = useState({});
 
-  // const user = {
-  //   name: "Abhinandan",
-  //   email: "abhi@email.com",
-  //   joined: "Jan 2025",
-  //   solved: 42,
-  //   submissions: 125,
-  //   notesUploaded: 9,
-  //   score: 870,
-  // };
+//   // const user = {
+//   //   name: "Abhinandan",
+//   //   email: "abhi@email.com",
+//   //   joined: "Jan 2025",
+//   //   solved: 42,
+//   //   submissions: 125,
+//   //   notesUploaded: 9,
+//   //   score: 870,
+//   // };
 
-  useEffect(() => {
-    fetch(`${getDomain()}/api/user/profile`, {
-      credentials: "include",
-    })
-      .then(async (res) => {
-        const data = await res.json();
-        console.log(data);
-        setUser(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+//   useEffect(() => {
+//     fetch(`${getDomain()}/api/user/profile`, {
+//       credentials: "include",
+//     })
+//       .then(async (res) => {
+//         const data = await res.json();
+//         console.log(data);
+//         setUser(data);
+//       })
+//       .catch((err) => {
+//         console.log(err);
+//       });
+//   }, []);
 
-  return (
-    <div className="min-h-screen bg-[#1c1c1c] text-white p-6 pb-20">
-      {/* HEADER */}
-      <div className="bg-[#242424] p-8 rounded-2xl shadow-lg border border-gray-700 mb-10">
-        <div className="flex items-center gap-6">
-          <div className="bg-orange-500 w-20 h-20 rounded-full flex items-center justify-center text-4xl">
-            <FontAwesomeIcon icon={faUser} />
-          </div>
+//   return (
+//     <div className="min-h-screen bg-[#1c1c1c] text-white p-6 pb-20">
+//       {/* HEADER */}
+//       <div className="bg-[#242424] p-8 rounded-2xl shadow-lg border border-gray-700 mb-10">
+//         <div className="flex items-center gap-6">
+//           <div className="bg-orange-500 w-20 h-20 rounded-full flex items-center justify-center text-4xl">
+//             <FontAwesomeIcon icon={faUser} />
+//           </div>
 
-          <div>
-            <h1 className="text-3xl font-bold">{user.name}</h1>
-            <p className="text-gray-400">{user.email}</p>
-            {/* <p className="text-gray-500 text-sm mt-1">Joined: {user.joined}</p> */}
-          </div>
-        </div>
-      </div>
+//           <div>
+//             <h1 className="text-3xl font-bold">{user.name}</h1>
+//             <p className="text-gray-400">{user.email}</p>
+//             {/* <p className="text-gray-500 text-sm mt-1">Joined: {user.joined}</p> */}
+//           </div>
+//         </div>
+//       </div>
 
-      {/* STATS GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
-        {/* Questions Solved */}
-        <div className="bg-[#242424] p-8 rounded-xl border border-gray-700 text-center">
-          <FontAwesomeIcon
-            icon={faCheckCircle}
-            className="text-4xl text-orange-500 mb-4"
-          />
-          {/* <h2 className="text-3xl font-bold">{user.solved}</h2> */}
-          <p className="text-gray-300">Questions Solved</p>
-        </div>
+//       {/* STATS GRID */}
+//       <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
+//         {/* Questions Solved */}
+//         <div className="bg-[#242424] p-8 rounded-xl border border-gray-700 text-center">
+//           <FontAwesomeIcon
+//             icon={faCheckCircle}
+//             className="text-4xl text-orange-500 mb-4"
+//           />
+//           {/* <h2 className="text-3xl font-bold">{user.solved}</h2> */}
+//           <p className="text-gray-300">Questions Solved</p>
+//         </div>
 
-        {/* Submissions */}
-        <div className="bg-[#242424] p-8 rounded-xl border border-gray-700 text-center">
-          <FontAwesomeIcon
-            icon={faCode}
-            className="text-4xl text-orange-500 mb-4"
-          />
-          {/* <h2 className="text-3xl font-bold">{user.submissions}</h2> */}
-          <p className="text-gray-300">Submissions Made</p>
-        </div>
+//         {/* Submissions */}
+//         <div className="bg-[#242424] p-8 rounded-xl border border-gray-700 text-center">
+//           <FontAwesomeIcon
+//             icon={faCode}
+//             className="text-4xl text-orange-500 mb-4"
+//           />
+//           {/* <h2 className="text-3xl font-bold">{user.submissions}</h2> */}
+//           <p className="text-gray-300">Submissions Made</p>
+//         </div>
 
-        {/* Notes Uploaded */}
-        <div className="bg-[#242424] p-8 rounded-xl border border-gray-700 text-center">
-          <FontAwesomeIcon
-            icon={faFileAlt}
-            className="text-4xl text-orange-500 mb-4"
-          />
-          {/* <h2 className="text-3xl font-bold">{user.notesUploaded}</h2> */}
-          <p className="text-gray-300">Notes Uploaded</p>
-        </div>
+//         {/* Notes Uploaded */}
+//         <div className="bg-[#242424] p-8 rounded-xl border border-gray-700 text-center">
+//           <FontAwesomeIcon
+//             icon={faFileAlt}
+//             className="text-4xl text-orange-500 mb-4"
+//           />
+//           {/* <h2 className="text-3xl font-bold">{user.notesUploaded}</h2> */}
+//           <p className="text-gray-300">Notes Uploaded</p>
+//         </div>
 
-        {/* Score */}
-        <div className="bg-[#242424] p-8 rounded-xl border border-gray-700 text-center">
-          <FontAwesomeIcon
-            icon={faTrophy}
-            className="text-4xl text-orange-500 mb-4"
-          />
-          {/* <h2 className="text-3xl font-bold">{user.score}</h2> */}
-          <p className="text-gray-300">Total Score</p>
-        </div>
-      </div>
+//         {/* Score */}
+//         <div className="bg-[#242424] p-8 rounded-xl border border-gray-700 text-center">
+//           <FontAwesomeIcon
+//             icon={faTrophy}
+//             className="text-4xl text-orange-500 mb-4"
+//           />
+//           {/* <h2 className="text-3xl font-bold">{user.score}</h2> */}
+//           <p className="text-gray-300">Total Score</p>
+//         </div>
+//       </div>
 
-      {/* RECENT ACTIVITY */}
-      <div className="bg-[#242424] p-8 rounded-2xl border border-gray-700 mt-14 max-w-5xl mx-auto shadow-lg">
-        <h2 className="text-2xl font-semibold mb-6 text-orange-400">
-          Recent Activity
-        </h2>
+//       {/* RECENT ACTIVITY */}
+//       <div className="bg-[#242424] p-8 rounded-2xl border border-gray-700 mt-14 max-w-5xl mx-auto shadow-lg">
+//         <h2 className="text-2xl font-semibold mb-6 text-orange-400">
+//           Recent Activity
+//         </h2>
 
-        <div className="space-y-5">
-          <div className="flex justify-between items-center bg-[#1f1f1f] p-4 rounded-lg border border-gray-700">
-            <p className="text-gray-300">Solved: Two Sum Problem</p>
-            <FontAwesomeIcon icon={faArrowRight} />
-          </div>
+//         <div className="space-y-5">
+//           <div className="flex justify-between items-center bg-[#1f1f1f] p-4 rounded-lg border border-gray-700">
+//             <p className="text-gray-300">Solved: Two Sum Problem</p>
+//             <FontAwesomeIcon icon={faArrowRight} />
+//           </div>
 
-          <div className="flex justify-between items-center bg-[#1f1f1f] p-4 rounded-lg border border-gray-700">
-            <p className="text-gray-300">Uploaded: DBMS Notes (PDF)</p>
-            <FontAwesomeIcon icon={faArrowRight} />
-          </div>
+//           <div className="flex justify-between items-center bg-[#1f1f1f] p-4 rounded-lg border border-gray-700">
+//             <p className="text-gray-300">Uploaded: DBMS Notes (PDF)</p>
+//             <FontAwesomeIcon icon={faArrowRight} />
+//           </div>
 
-          <div className="flex justify-between items-center bg-[#1f1f1f] p-4 rounded-lg border border-gray-700">
-            <p className="text-gray-300">Mock Interview Completed</p>
-            <FontAwesomeIcon icon={faArrowRight} />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+//           <div className="flex justify-between items-center bg-[#1f1f1f] p-4 rounded-lg border border-gray-700">
+//             <p className="text-gray-300">Mock Interview Completed</p>
+//             <FontAwesomeIcon icon={faArrowRight} />
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };

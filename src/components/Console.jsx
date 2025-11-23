@@ -17,7 +17,7 @@ const Console = () => {
   }, [isRunning, isSubmitting]);
 
   return (
-    <div className="h-60 border-t border-gray-700 bg-[#1e1e1e] text-gray-200 font-mono text-sm p-3 overflow-auto">
+    <div className=" h-40 md:h-60 border-t border-gray-700 bg-[#1e1e1e] text-gray-200 font-mono text-sm p-3 overflow-auto">
       <h2 className="text-lg font-semibold mb-3 text-white">Console</h2>
 
       {!isLoading && testcases.length === 0 && (

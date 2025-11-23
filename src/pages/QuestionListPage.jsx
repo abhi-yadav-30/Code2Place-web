@@ -1,24 +1,32 @@
 import { useEffect, useState } from "react";
 import { getDomain } from "../utils/helper";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function QuestionsListPage() {
   const [questions, setQuestions] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        console.log(getDomain());
-        const res = await fetch(
-          `${getDomain()}/api/question/questions`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-          }
-        );
-        const questions = await res.json();
-        setQuestions(questions);
+        // console.log(getDomain());
+        const res = await fetch(`${getDomain()}/api/question/questions`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+        // console.log("resposnce : ", res);
+        const data = await res.json();
+        if (data?.error) {
+          console.log("error : ", data?.error);
+          toast.error(data?.error);
+          // navigate("/auth");
+          return;
+        }
+        // console.log("resposnce : ", data);
+        setQuestions(data);
       } catch (error) {
         console.error(error);
       }

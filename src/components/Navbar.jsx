@@ -45,7 +45,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="h-16 bg-[#1e1e1e] border-b border-gray-700 fixed top-0 w-full z-50 flex items-center shadow-lg shadow-black/20">
+    <nav className="h-16 bg-[#1e1e1e] border-b border-gray-700 fixed top-0 left-0 w-full z-50 flex items-center shadow-lg shadow-black/20">
       <div className="max-w-7xl mx-auto px-4 md:px-8 w-full flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="text-2xl font-bold text-orange-500 underline">
@@ -86,7 +86,7 @@ const Navbar = () => {
             <>
               <button
                 onClick={() => setOpen(!open)}
-                className="ml-4 flex items-center gap-2 text-gray-300 hover:text-white"
+                className="ml-4 flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer"
               >
                 <div className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-700">
                   {user.name ? user.name[0].toUpperCase() : "U"}

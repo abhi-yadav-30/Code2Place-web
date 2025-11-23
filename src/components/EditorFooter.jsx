@@ -11,9 +11,12 @@ import { useState } from "react";
 import { DiffLevelToScoreMapping } from "../constants";
 import toast from "react-hot-toast";
 import { getDomain } from "../utils/helper";
+import { useNavigate } from "react-router-dom";
+
 
 const EditorFooter = ({ code, queId, question }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const language = useSelector((state) => state.utiles.language);
   const isRunning = useSelector((state) => state.utiles.isRunning);
   const isSubmitting = useSelector((state) => state.utiles.isSubmitting);
@@ -40,6 +43,12 @@ const EditorFooter = ({ code, queId, question }) => {
       });
 
       const data = await res.json();
+      if (data?.error) {
+        console.log("error : ", data?.error);
+        toast.error(data?.error);
+        // navigate("/auth");
+        return;
+      }
       // console.log("Response:", data);
       dispatch(setTestCases(data));
     } catch (err) {
@@ -75,7 +84,12 @@ const EditorFooter = ({ code, queId, question }) => {
       });
 
       const data = await res.json();
-      console.log("Response:", data);
+      if (data?.error) {
+        console.log("error : ", data?.error);
+        toast.error(data?.error);
+        // navigate("/auth");
+        return;
+      }
       if (data?.status.isPassed) {
         toast.success("All test cases passed!");
       } else {
