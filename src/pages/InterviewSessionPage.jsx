@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import jsPDF from "jspdf";
 import { Button } from "../components/UIComponents";
 import { getDomain } from "../utils/helper";
@@ -10,114 +10,124 @@ const InterviewSessionPage = () => {
 
   const { userId } = JSON.parse(localStorage.getItem("user"));
   const [session, setSession] = useState(null);
-  const [loading ,setLoading]=useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    try{
+    try {
       setLoading(true);
-    const fetchSession = async () => {
-      const res = await fetch(
-        `${getDomain()}/api/interview/transcription/${sessionId}/user/${userId}`,
-        {
-          credentials: "include",
+      const fetchSession = async () => {
+        const res = await fetch(
+          `${getDomain()}/api/interview/transcription/${sessionId}/user/${userId}`,
+          {
+            credentials: "include",
+          }
+        );
+        const data = await res.json();
+        if (data?.error) {
+          console.log("error : ", data?.error);
+          toast.error(data?.error);
+          // navigate("/auth");
+          return;
         }
-      );
-      const data = await res.json();
-      if (data?.error) {
-        console.log("error : ", data?.error);
-        toast.error(data?.error);
-        // navigate("/auth");
-        return;
-      }
-      setSession(data.session || null);
-    };
-    fetchSession();
-  }catch(err){
-    console.log(err)
-  }finally{
-    setLoading(false);
-  }
+        setSession(data.session || null);
+      };
+      fetchSession();
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
   }, [sessionId, userId]);
 
-  const downloadTxt = () => {
+const downloadTxt = () => {
+  if (!session) return;
+
+  let content = `Interview Date: ${new Date(
+    session.createdAt
+  ).toLocaleString()}\n`;
+  content += `Duration: ${session.duration} sec\n\n`;
+
+  session.transcription.forEach((t, idx) => {
+    content += `Q${idx + 1}: ${t.question}\n`;
+    content += `Answer: ${t.answer}\n`;
+
+    // ⭐ Correct Answer (NEW)
+    content += `Correct Answer: ${t.generatedAnswer || "N/A"}\n`;
+
+    content += `Feedback: ${t.feedback}\n`;
+    content += `---------------------------\n`;
+  });
+
+  const blob = new Blob([content], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `interview_${sessionId}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+
+  const downloadPDF = () => {
     if (!session) return;
 
-    let content = `Interview Date: ${new Date(
-      session.createdAt
-    ).toLocaleString()}\n`;
-    content += `Duration: ${session.duration} sec\n\n`;
+    const doc = new jsPDF();
+
+    // Title
+    doc.setFontSize(18);
+    doc.text("Interview Transcription", 14, 20);
+
+    // Meta Section
+    doc.setFontSize(12);
+    doc.text(`Date: ${new Date(session.createdAt).toLocaleString()}`, 14, 35);
+    doc.text(`Duration: ${session.duration} sec`, 14, 45);
+
+    let y = 60;
 
     session.transcription.forEach((t, idx) => {
-      content += `Q${idx + 1}: ${t.question}\n`;
-      content += `Answer: ${t.answer}\n`;
-      content += `Feedback: ${t.feedback}\n`;
-      content += `---------------------------\n`;
+      doc.setFontSize(14);
+      doc.text(`Question ${idx + 1}`, 14, y);
+      y += 8;
+
+      doc.setFontSize(12);
+      doc.text(`Q: ${t.question}`, 14, y);
+      y += 8;
+
+      const answerLines = doc.splitTextToSize(`Answer: ${t.answer}`, 180);
+      doc.text(answerLines, 14, y);
+      y += answerLines.length * 7 + 4;
+
+      const correctLines = doc.splitTextToSize(
+        `Correct Answer: ${t.generatedAnswer || "N/A"}`,
+        180
+      );
+      doc.text(correctLines, 14, y);
+      y += correctLines.length * 7 + 4;
+
+      const feedbackLines = doc.splitTextToSize(`Feedback: ${t.feedback}`, 180);
+      doc.text(feedbackLines, 14, y);
+      y += feedbackLines.length * 7 + 10;
+
+      // Add new page if content reaches bottom
+      if (y > 270) {
+        doc.addPage();
+        y = 20;
+      }
     });
 
-    const blob = new Blob([content], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `interview_${sessionId}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+    doc.save(`interview_${sessionId}.pdf`);
   };
 
- 
-
- const downloadPDF = () => {
-   if (!session) return;
-
-   const doc = new jsPDF();
-
-   // Title
-   doc.setFontSize(18);
-   doc.text("Interview Transcription", 14, 20);
-
-   // Meta Section
-   doc.setFontSize(12);
-   doc.text(`Date: ${new Date(session.createdAt).toLocaleString()}`, 14, 35);
-   doc.text(`Duration: ${session.duration} sec`, 14, 45);
-
-   let y = 60;
-
-   session.transcription.forEach((t, idx) => {
-     doc.setFontSize(14);
-     doc.text(`Question ${idx + 1}`, 14, y);
-     y += 8;
-
-     doc.setFontSize(12);
-     doc.text(`Q: ${t.question}`, 14, y);
-     y += 8;
-
-     const answerLines = doc.splitTextToSize(`Answer: ${t.answer}`, 180);
-     doc.text(answerLines, 14, y);
-     y += answerLines.length * 7 + 4;
-
-     const feedbackLines = doc.splitTextToSize(`Feedback: ${t.feedback}`, 180);
-     doc.text(feedbackLines, 14, y);
-     y += feedbackLines.length * 7 + 10;
-
-     // Add new page if content reaches bottom
-     if (y > 270) {
-       doc.addPage();
-       y = 20;
-     }
-   });
-
-   doc.save(`interview_${sessionId}.pdf`);
- };
-
- if(loading){
-  return (
-    <div className="p-10 text-gray-300 text-center text-xl bg-[#202020] min-h-screen flex items-center justify-center">
-      <div className="flex justify-center items-center py-4">
-        <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-300 border-t-transparent"></div>
+  if (loading) {
+    return (
+      <div className="p-10 text-gray-300 text-center text-xl bg-[#202020] min-h-screen flex items-center justify-center">
+        <div className="flex justify-center items-center py-4">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-300 border-t-transparent"></div>
+        </div>
       </div>
-    </div>
-  );
- } else if (!session)
+    );
+  } else if (!session)
     return (
       <div className="p-10 text-gray-300 text-center text-xl bg-[#202020] min-h-screen flex items-center justify-center">
         transcription not found
@@ -188,6 +198,12 @@ const InterviewSessionPage = () => {
                     </p>
                     <p className="text-sm sm:text-lg text-gray-300 mt-1 whitespace-pre-line">
                       {t.answer}
+                    </p>
+                    {t.generatedAnswer && <p className="text-purple-300 mt-4 font-semibold text-md sm:text-xl">
+                      Correct Answer
+                    </p> }
+                    <p className="text-sm sm:text-lg text-gray-300 mt-1 whitespace-pre-line">
+                      {t.generatedAnswer}
                     </p>
 
                     <p className="text-blue-300 mt-4 font-semibold text-md sm:text-xl">

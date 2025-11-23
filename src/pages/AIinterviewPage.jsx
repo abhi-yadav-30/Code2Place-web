@@ -22,6 +22,7 @@ const AIinterviewPage = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [recordTime, setRecordTime] = useState(0);
   const [camera, setCamera] = useState(false);
+  const [generatedAns , setGeneratedAns] = useState("");
 
   useEffect(() => {
     let interval;
@@ -114,6 +115,7 @@ const AIinterviewPage = () => {
         console.log({
           answer: data.text,
           prvQuestion: question,
+          prvAns: generatedAns,
           userId,
           sessionId,
         });
@@ -125,6 +127,7 @@ const AIinterviewPage = () => {
           body: JSON.stringify({
             answer: data.text,
             prvQuestion: question,
+            prvAns:generatedAns,
             userId,
             sessionId,
             role,
@@ -147,6 +150,7 @@ const AIinterviewPage = () => {
         //   return;
         // }
         setQuestion(ai.nextQuestion);
+        setGeneratedAns(ai.correctAnswer);
         setFeedback(ai.shortFeedback);
       };
 
@@ -186,6 +190,7 @@ const AIinterviewPage = () => {
       setFeedback("");
       setAnswerText("");
       setQuestion("Introduce yourself.");
+      setGeneratedAns("");
       setSessionId(null);
 
       // stop camera stream
