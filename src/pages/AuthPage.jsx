@@ -226,7 +226,7 @@ const AuthPage = () => {
             {isLogin ? "Register" : "Login"}
           </button>
         </p>
-        <div className="mt-3">
+        <div className="mt-3 flex justify-center items-center">
           <GoogleLogin
             onSuccess={async (response) => {
               const res = await fetch(`${getDomain()}/api/auth/google`, {
