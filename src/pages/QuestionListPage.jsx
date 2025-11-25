@@ -5,10 +5,12 @@ import toast from "react-hot-toast";
 
 export default function QuestionsListPage() {
   const [questions, setQuestions] = useState([]);
+  const [loading , setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuestions = async () => {
+      setLoading(true);
       try {
         // console.log(getDomain());
         const res = await fetch(`${getDomain()}/api/question/questions`, {
@@ -27,9 +29,12 @@ export default function QuestionsListPage() {
         }
         // console.log("resposnce : ", data);
         setQuestions(data);
+        setLoading(false);
       } catch (error) {
         console.error(error);
+        setLoading(false);
       }
+      
     };
 
     fetchQuestions();
@@ -52,6 +57,17 @@ export default function QuestionsListPage() {
       <span className="px-2 py-1 rounded-full bg-red-600 text-xs">Hard</span>
     );
   };
+
+  if(loading){
+    return (
+      <div className="h-full bg-[#2b2b2b] text-white p-6 overflow-y-scroll ">
+        <h1 className="text-2xl font-semibold mb-5">All Questions</h1>
+        <div className="flex justify-center items-center h-full">
+          <div className="w-16 h-16 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-[calc(100vh-64px)] bg-[#2b2b2b] text-white p-6 overflow-y-scroll">
