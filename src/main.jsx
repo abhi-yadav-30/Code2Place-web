@@ -7,6 +7,9 @@ import App from "./App.jsx";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
@@ -19,8 +22,10 @@ if ("serviceWorker" in navigator) {
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </GoogleOAuthProvider>
   </StrictMode>
 );

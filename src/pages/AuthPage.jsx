@@ -10,6 +10,7 @@ import {
   sanitizeText,
 } from "../utils/validation";
 
+import { GoogleLogin } from "@react-oauth/google";
 
 const AuthPage = () => {
   const navigate = useNavigate();
@@ -158,12 +159,10 @@ const AuthPage = () => {
         <h2 className="text-2xl font-semibold text-white text-center mb-6">
           {isLogin ? "Login" : "Register"}
         </h2>
-
         {/* ERROR */}
         {error && (
           <p className="text-red-400 text-center mb-2 text-sm">{error}</p>
         )}
-
         {/* FORM */}
         <form
           onSubmit={isLogin ? handleLogin : handleRegister}
@@ -217,7 +216,6 @@ const AuthPage = () => {
             {loading ? "Please wait..." : isLogin ? "Login" : "Register"}
           </button>
         </form>
-
         {/* SWITCH */}
         <p className="text-gray-400 text-sm text-center mt-4">
           {isLogin ? "Don't have an account?" : "Already have an account?"}
@@ -228,6 +226,28 @@ const AuthPage = () => {
             {isLogin ? "Register" : "Login"}
           </button>
         </p>
+        <div className="mt-3">
+          <GoogleLogin
+            onSuccess={async (response) => {
+              const res = await fetch(`${getDomain()}/api/auth/google`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ credential: response.credential }),
+              });
+
+              const data = await res.json();
+              if (res.ok) {
+                toast.success("Google Login Success!");
+                localStorage.setItem("user", JSON.stringify(data.user));
+                navigate("/questions");
+              } else {
+                toast.error(data.msg);
+              }
+            }}
+            onError={() => toast.error("Google Login Failed")}
+          />
+        </div>
       </motion.div>
     </div>
   );

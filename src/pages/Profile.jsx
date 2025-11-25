@@ -86,12 +86,12 @@ const Profile = () => {
       <div className="bg-[#242424] p-2 sm:p-8 rounded-2xl shadow-lg border border-gray-700  mb-4 sm:mb-10">
         <div className="flex flex-col sm:flex-row  items-center justify-between sm:gap-6">
           {/* LEFT SIDE (Avatar + Info) */}
-          <div className="flex items-center justify-between  sm:gap-6 w-60 sm:w-80 h-25 ">
+          <div className="flex items-center justify-between  sm:gap-6 w-57 sm:w-105 h-25 ">
             <div className="bg-orange-500  w-15 h-14 sm:w-20 sm:h-20 rounded-full  flex items-center justify-center text-2xl sm:text-4xl">
               <FontAwesomeIcon icon={faUser} />
             </div>
 
-            <div className="w-50 flex flex-col items-center ">
+            <div className="md:w-70 flex flex-col items-center ">
               {loading ? (
                 <>
                   <ShimmerBox h="h-6 w-40 mb-3" />
@@ -99,7 +99,7 @@ const Profile = () => {
                   <ShimmerBox h="h-4 w-60" />
                 </>
               ) : (
-                <div className="">
+                <div className="md:w-80">
                   <h1 className="text-xl sm:text-3xl font-bold">
                     {user.username}
                   </h1>
