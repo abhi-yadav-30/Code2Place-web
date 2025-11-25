@@ -4,6 +4,12 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getDomain } from "../utils/helper";
+import {
+  validateEmail,
+  validatePassword,
+  sanitizeText,
+} from "../utils/validation";
+
 
 const AuthPage = () => {
   const navigate = useNavigate();
@@ -80,6 +86,27 @@ const AuthPage = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
+    const name = sanitizeText(form.name);
+    const username = sanitizeText(form.username);
+
+    // VALIDATION
+    if (!name || name.length < 3) {
+      return setError("Name must be at least 3 characters long.");
+    }
+
+    if (!username || username.length < 3) {
+      return setError("Username must be at least 3 characters long.");
+    }
+
+    if (!validateEmail(form.email)) {
+      return setError("Invalid email format.");
+    }
+
+    if (!validatePassword(form.password)) {
+      return setError(
+        "Password must be at least 8 chars, include uppercase, lowercase, number, and special character."
+      );
+    }
     setLoading(true);
 
     try {
