@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 
 const QuestionPage = () => {
   const [code, setCode] = useState(
-    `// Write your code \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n `
+    `// Solve the challenge below \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n `
   );
   const [activeTab, setActiveTab] = useState("description");
   const navigate = useNavigate()
@@ -24,67 +24,53 @@ const QuestionPage = () => {
   const [question, setQuestion] = useState({});
 
   useEffect(() => {
-    const func = async () => {
+    const fetchQuestion = async () => {
       try {
         const response = await fetch(
-         `${getDomain()}/api/question/questions/${id}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-          }
+          `${getDomain()}/api/question/questions/${id}`,
+          { credentials: "include" }
         );
         const data = await response.json();
         if (data?.error) {
-          console.log("error : ", data?.error);
           toast.error(data?.error);
-          // navigate("/auth");
           return;
         }
-        // console.log("resposnce : ", data);
-        
-
         setQuestion(data.data);
       } catch (error) {
-        console.error("Error fetching questions:", error);
+        console.error("Error fetching question:", error);
       }
     };
-    func();
-  }, []);
- return (
-   <div className="w-full h-[calc(100vh-64px)]  flex flex-col md:flex-row overflow-hidden bg-[#7f7f7f]">
-     {/* LEFT CODE EDITOR */}
-     <div className="w-full md:w-1/2 h-[50vh] md:h-full flex flex-col border-b md:border-b-0 md:border-r border-gray-300">
-       <EditorHead />
+    fetchQuestion();
+  }, [id]);
 
-       {/* Editor scrollable */}
-       <div className="flex-1 overflow-hidden">
-         <CodeEditor handleCode={handleCode} code={code} />
-       </div>
+  return (
+    <div className="h-full flex flex-col md:flex-row bg-[#0a0a0a] overflow-hidden">
+      
+      {/* LEFT: CONTENT SIDE */}
+      <div className="w-full md:w-[45%] h-1/2 md:h-full flex flex-col border-r border-white/5 bg-[#0f0f0f]">
+        <DescriptionHeader activeTab={activeTab} setActiveTab={setActiveTab} />
+        <div className="flex-1 overflow-auto">
+          {activeTab === "description" ? (
+            <Description question={question} />
+          ) : (
+            <Submissions quesId={id} />
+          )}
+        </div>
+        <Console />
+      </div>
 
-       {/* Footer */}
-       <EditorFooter code={code} queId={id} question={question} />
-     </div>
+      {/* RIGHT: EDITOR SIDE */}
+      <div className="w-full md:w-[55%] h-1/2 md:h-full flex flex-col bg-[#111111]">
+        <EditorHead />
+        <div className="flex-1 overflow-hidden relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent pointer-events-none" />
+          <CodeEditor handleCode={handleCode} code={code} />
+        </div>
+        <EditorFooter code={code} queId={id} question={question} />
+      </div>
 
-     {/* RIGHT SIDE */}
-     <div className="w-full md:w-1/2 h-[50vh] md:h-full flex flex-col">
-       <DescriptionHeader activeTab={activeTab} setActiveTab={setActiveTab} />
-
-       {/* Scrollable description */}
-       <div className="flex-1 overflow-auto bg-[#262626]">
-         {activeTab === "description" ? (
-           <Description question={question} />
-         ) : (
-           <Submissions quesId={id} />
-         )}
-       </div>
-
-       <Console />
-     </div>
-   </div>
- );
-
+    </div>
+  );
 };
 
 export default QuestionPage;

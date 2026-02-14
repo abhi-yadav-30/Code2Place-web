@@ -3,48 +3,59 @@ import jsPDF from "jspdf";
 import { getDomain } from "../utils/helper";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  History, 
+  Calendar, 
+  Clock, 
+  MessageSquare, 
+  Download, 
+  FileText, 
+  Eye, 
+  Sparkles,
+  ChevronRight,
+  Zap,
+  LayoutGrid
+} from "lucide-react";
+import { Button, Card, CardContent } from "../components/UIComponents";
 
 const AllTranscriptionsPage = () => {
-  const { userId } = JSON.parse(localStorage.getItem("user"));
+  const { userId } = JSON.parse(localStorage.getItem("user")) || {};
   const [sessions, setSessions] = useState([]);
-  const [loading,setLoading] = useState(true);
-  const navigate = useNavigate()
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  // Fetch all interview transcripts of the user
   useEffect(() => {
-    try{
-      
-    
-    setLoading(true);
+    if (!userId) {
+      toast.error("User not found. Please log in.");
+      navigate("/auth");
+      return;
+    }
+
     const fetchSessions = async () => {
-      const res = await fetch(
-        `${getDomain()}/api/interview/all/${userId}`,
-        {
+      try {
+        setLoading(true);
+        const res = await fetch(`${getDomain()}/api/interview/all/${userId}`, {
           credentials: "include",
+        });
+        const data = await res.json();
+        if (data?.error) {
+          toast.error(data?.error);
+          return;
         }
-      );
-      const data = await res.json();
-      if (data?.error) {
-        console.log("error : ", data?.error);
-        toast.error(data?.error);
-        // navigate("/auth");
-        return;
+        setSessions(data.sessions || []);
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to fetch transcriptions");
+      } finally {
+        setLoading(false);
       }
-      setSessions(data.sessions || []);
-      setLoading(false);
     };
     fetchSessions();
-  }catch(err){
-    console.log(err);
-    setLoading(false);
-  }
-  }, [userId]);
+  }, [userId, navigate]);
 
-  // Download TXT
   const downloadTxt = (session) => {
-    let content = `Interview Date: ${new Date(
-      session.createdAt
-    ).toLocaleString()}\n`;
+    let content = `Interview Date: ${new Date(session.createdAt).toLocaleString()}\n`;
     content += `Duration: ${session.duration} sec\n\n`;
 
     session.transcription.forEach((t, idx) => {
@@ -56,120 +67,191 @@ const AllTranscriptionsPage = () => {
 
     const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-
     const a = document.createElement("a");
     a.href = url;
     a.download = `interview_${session._id}.txt`;
     a.click();
-
     URL.revokeObjectURL(url);
+    toast.success("TXT Downloaded");
   };
 
-  // Download PDF (frontend-generated)
   const downloadPDF = (session) => {
     const doc = new jsPDF();
-
     doc.setFontSize(18);
     doc.text("Interview Transcription", 14, 20);
-
     doc.setFontSize(12);
     doc.text(`Date: ${new Date(session.createdAt).toLocaleString()}`, 14, 35);
     doc.text(`Duration: ${session.duration} sec`, 14, 45);
 
     let y = 60;
-
     session.transcription.forEach((t, idx) => {
       doc.setFontSize(14);
       doc.text(`Question ${idx + 1}`, 14, y);
       y += 8;
-
       doc.setFontSize(12);
       doc.text(`Q: ${t.question}`, 14, y);
       y += 8;
-
       const ansLines = doc.splitTextToSize(`Answer: ${t.answer}`, 180);
       doc.text(ansLines, 14, y);
       y += ansLines.length * 7 + 4;
-
       const feedLines = doc.splitTextToSize(`Feedback: ${t.feedback}`, 180);
       doc.text(feedLines, 14, y);
       y += feedLines.length * 7 + 10;
-
       if (y > 270) {
         doc.addPage();
         y = 20;
       }
     });
-
     doc.save(`interview_${session._id}.pdf`);
+    toast.success("PDF Downloaded");
   };
 
-  if(loading){
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-400 bg-[#202020]">
-        <div className="flex justify-center items-center py-4">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-300 border-t-transparent"></div>
+      <div className="h-full bg-[#0a0a0a] flex items-center justify-center">
+        <div className="relative group">
+          <div className="absolute -inset-4 bg-orange-500/20 rounded-full blur-xl group-hover:bg-orange-500/30 transition-all duration-500 animate-pulse"></div>
+          <div className="relative w-16 h-16 border-t-2 border-r-2 border-orange-500 rounded-full animate-spin"></div>
         </div>
       </div>
     );
-  } else if (!sessions.length)
+  }
+
+  if (!sessions.length) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-400 bg-[#202020]">
-        No interview transcriptions found.
+      <div className="h-full bg-[#0a0a0a] flex flex-col items-center justify-center space-y-8 p-10 text-center">
+        <div className="w-24 h-24 rounded-[2rem] bg-white/[0.02] border border-white/5 flex items-center justify-center text-gray-700">
+          <History size={48} />
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-black text-white">No transcriptions found</h2>
+          <p className="text-gray-500 font-medium italic">Start practicing to see your session history here.</p>
+        </div>
+        <Button onClick={() => navigate("/ai-interview")} className="px-10">
+          Go to Simulator
+          <ChevronRight size={20} />
+        </Button>
       </div>
     );
+  }
 
   return (
-    <div className="min-h-screen bg-[#202020] text-white pt-5 sm:p-10">
-      <h1 className="text-xl sm:text-4xl font-bold text-emerald-300 mb-2 sm:mb-10 text-center">
-        Your Interview Transcriptions
-      </h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-2  gap-3 sm:gap-8 h-[74vh] overflow-y-auto px-5">
-        {sessions.map((session) => (
-          <div
-            key={session._id}
-            className="p-3 sm:p-6 bg-[#1a1a1a] border border-gray-700 rounded-2xl shadow-lg  sm:h-60 "
-          >
-            {session.createdAt && (
-              <h2 className="text-lg sm:text-xl font-bold text-amber-300">
-                Interview on {new Date(session.createdAt).toLocaleDateString()}
-              </h2>
-            )}
-
-            <p className="text-gray-300 mt-2">
-              Duration: {Number(session.duration)} sec
-            </p>
-
-            <p className="text-gray-400 text-sm mt-1">
-              Questions: {session.transcription.length}
-            </p>
-
-            {/* Action Buttons */}
-            <div className="flex gap-2 sm:gap-4 mt-2 sm:mt-6">
-              <a
-                href={`/ai-interview/transcription/view/${session._id}`}
-                className=" px-2 sm:px-4 py-1 sm:py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-white flex items-center justify-center"
-              >
-                View
-              </a>
-
-              <button
-                onClick={() => downloadTxt(session)}
-                className="px-2 sm:px-4 py-1 sm:py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-white flex items-center justify-center"
-              >
-                Download TXT
-              </button>
-
-              <button
-                onClick={() => downloadPDF(session)}
-                className="px-2 sm:px-4 py-1 sm:py-2 bg-green-600 hover:bg-green-500 rounded-lg text-white flex items-center justify-center"
-              >
-                Download PDF
-              </button>
+    <div className="h-full bg-[#0a0a0a] text-white p-4 md:p-8 overflow-y-auto relative selection:bg-orange-500/30">
+      {/* Background Decorations */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-orange-600/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+      
+      <div className="max-w-7xl mx-auto space-y-12 py-10">
+        
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-white/5">
+          <div className="space-y-2">
+            <div className="flex items-center gap-3 text-orange-500 text-[10px] font-black uppercase tracking-[0.2em]">
+              <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
+              Session Archive
             </div>
+            <h1 className="text-3xl md:text-5xl font-black tracking-tighter">
+              Your Interview <span className="bg-gradient-to-r from-orange-500 to-rose-600 bg-clip-text text-transparent">History.</span>
+            </h1>
           </div>
-        ))}
+          <div className="flex items-center gap-4">
+            <div className="px-5 py-2.5 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center gap-3">
+              <LayoutGrid size={18} className="text-gray-500" />
+              <span className="text-sm font-bold text-gray-300">{sessions.length} Sessions</span>
+            </div>
+            <Button variant="secondary" onClick={() => navigate("/ai-interview")} className="text-xs py-2.5">
+              New Session
+              <Sparkles size={16} />
+            </Button>
+          </div>
+        </div>
+
+        {/* Sessions Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <AnimatePresence mode="popLayout">
+            {sessions.map((session, index) => (
+              <motion.div
+                key={session._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+              >
+                <Card className="h-full border border-white/5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-orange-500/20 transition-all duration-500 group">
+                  <CardContent className="p-6 flex flex-col h-full space-y-6">
+                    {/* Card Top */}
+                    <div className="flex justify-between items-start">
+                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500/10 to-rose-600/10 flex items-center justify-center text-orange-500 group-hover:scale-110 transition-transform duration-500">
+                        <MessageSquare size={24} />
+                      </div>
+                      <div className="text-right">
+                        <div className="flex items-center gap-1.5 text-[10px] font-black uppercase text-gray-500 tracking-wider">
+                          <Calendar size={12} className="text-orange-500/50" />
+                          {new Date(session.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <h3 className="text-lg font-black text-white group-hover:text-orange-500 transition-colors">
+                        AI Practice Session
+                      </h3>
+                      <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest flex items-center gap-2">
+                        <Zap size={12} />
+                        Professional Grade
+                      </p>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col gap-1">
+                        <span className="text-[8px] font-black uppercase tracking-tighter text-gray-600">Duration</span>
+                        <div className="flex items-center gap-2 text-xs font-bold text-gray-300">
+                          <Clock size={12} className="text-orange-500/50" />
+                          {Math.floor(session.duration / 60)}m {session.duration % 60}s
+                        </div>
+                      </div>
+                      <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col gap-1">
+                        <span className="text-[8px] font-black uppercase tracking-tighter text-gray-600">Questions</span>
+                        <div className="flex items-center gap-2 text-xs font-bold text-gray-300">
+                          <MessageSquare size={12} className="text-orange-500/50" />
+                          {session.transcription.length} Steps
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="pt-4 border-t border-white/5 flex flex-col gap-2">
+                      <Button 
+                        onClick={() => navigate(`/ai-interview/transcription/view/${session._id}`)}
+                        className="w-full py-2.5 text-xs"
+                      >
+                        Launch Review
+                        <Eye size={16} />
+                      </Button>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button 
+                          variant="secondary" 
+                          onClick={() => downloadTxt(session)}
+                          className="py-2.5 text-[10px]"
+                        >
+                          <FileText size={14} />
+                          TXT
+                        </Button>
+                        <Button 
+                          variant="secondary" 
+                          onClick={() => downloadPDF(session)}
+                          className="py-2.5 text-[10px]"
+                        >
+                          <Download size={14} />
+                          PDF
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );

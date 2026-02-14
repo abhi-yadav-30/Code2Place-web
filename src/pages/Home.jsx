@@ -3,206 +3,169 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBolt,
   faShieldHalved,
-  faPalette,
   faChartLine,
   faFilePdf,
   faTrophy,
   faCloud,
+  faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import { getDomain } from "../utils/helper";
+import { motion } from "framer-motion";
+import { Button, Card, CardContent } from "../components/UIComponents";
 
 const Home = () => {
   const navigate = useNavigate();
-  console.log(getDomain());
+
+  const features = [
+    {
+      title: "Real Coding Environment",
+      desc: "Write, run, and test code with a built-in Monaco editor and real-time judge.",
+      icon: faBolt,
+      color: "from-orange-500 to-amber-500",
+    },
+    {
+      title: "AI Interview Simulator",
+      desc: "Practice HR & technical interviews with instant scoring and feedback.",
+      icon: faShieldHalved,
+      color: "from-blue-500 to-indigo-500",
+    },
+    {
+      title: "Notes & Study Material",
+      desc: "Upload or download high-quality notes and study material easily.",
+      icon: faFilePdf,
+      color: "from-rose-500 to-pink-500",
+    },
+    {
+      title: "Real-Time Insights",
+      desc: "Track everything with live analytics, dashboards, and performance metrics.",
+      icon: faChartLine,
+      color: "from-emerald-500 to-teal-500",
+    },
+    {
+      title: "Cloud Storage",
+      desc: "Secure cloud-based saving so your data is always accessible and backed up.",
+      icon: faCloud,
+      color: "from-cyan-500 to-blue-500",
+    },
+    {
+      title: "Coding Contests",
+      desc: "Participate in contests, rank up, and get detailed performance reports.",
+      icon: faTrophy,
+      color: "from-purple-500 to-violet-500",
+      comingSoon: true,
+    },
+  ];
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1 },
+  };
+
   return (
-    <div className="overflow-y-auto h-[92vh]">
-      <section className="w-full bg-[#262626] text-white flex flex-col items-center justify-center px-6 text-center min-h-[84vh] relative overflow-hidden">
-        {/* <section className="w-full bg-[#1d1d1d] text-white py-24 px-6 min-h-screen "></section> */}
-        <div className="absolute inset-0  opacity-20">
-          <svg
-            viewBox="0 0 1440 320"
-            className="w-full h-full"
-            preserveAspectRatio="none"
-          >
-            <path
-              fill="#ff7b00"
-              fillOpacity="0.3"
-              d="M0,64L48,101.3C96,139,192,213,288,234.7C384,256,480,224,576,181.3C672,139,768,85,864,90.7C960,96,1056,160,1152,170.7C1248,181,1344,139,1392,117.3L1440,96L1440,320L0,320Z"
-            ></path>
-          </svg>
-        </div>
-        {/* <div className="absolute inset-0 -z-10 opacity-20">
-          <svg viewBox="0 0 600 600" className="w-full h-full">
-            <path
-              d="M50 300 Q300 100 550 300 T1050 300"
-              stroke="#ff7b00"
-              strokeWidth="3"
-              fill="none"
-              opacity="0.4"
-            />
-            <path
-              d="M50 350 Q300 150 550 350 T1050 350"
-              stroke="#ff7b00"
-              strokeWidth="2"
-              fill="none"
-              opacity="0.2"
-            />
-          </svg>
-        </div> */}
-        <div className="absolute inset-0 -z-20 opacity-25">
-          <svg
-            viewBox="0 0 1440 320"
-            className="w-full h-full"
-            preserveAspectRatio="none"
-          >
-            <path
-              fill="#ff7b00"
-              fillOpacity="0.3"
-              d="M0,64L48,101.3C96,139,192,213,288,234.7C384,256,480,224,576,181.3C672,139,768,85,864,90.7C960,96,1056,160,1152,170.7C1248,181,1344,139,1392,117.3L1440,96L1440,320L0,320Z"
-            ></path>
-          </svg>
-        </div>
+    <div className="overflow-y-auto h-full scroll-smooth">
+      {/* Hero Section */}
+      <section className="relative min-h-[90vh] flex flex-col items-center justify-center px-6 overflow-hidden bg-[#0a0a0a]">
+        {/* Animated Background Elements */}
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-orange-600/20 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-rose-600/10 rounded-full blur-[120px] animate-pulse delay-1000"></div>
 
-        <h1 className="text-4xl md:text-6xl font-bold text-orange-600 mb-6 leading-tight">
-          Level Up Your Engineering Journey
-        </h1>
-
-        <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-          From coding practice to AI-powered interviews and curated learning
-          resources — Code2Place gives you everything you need to master
-          placements in one powerful platform.
-        </p>
-
-        <button
-          className="
-      mt-10
-      z-10
-      bg-orange-500 
-      hover:bg-orange-600 
-      text-white 
-      px-10 py-3 
-      rounded-lg 
-      text-xl 
-      font-semibold
-      transition-all 
-      duration-300
-      shadow-lg shadow-orange-500/20 cursor-pointer
-    "
-          onClick={() => navigate("/questions")}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="relative z-10 text-center max-w-4xl"
         >
-          Get Started
-        </button>
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8"
+          >
+            <span className="flex h-2 w-2 rounded-full bg-orange-500 animate-ping"></span>
+            <span className="text-sm font-medium text-gray-300">The Future of Placement Prep</span>
+          </motion.div>
+
+          <h1 className="text-5xl md:text-8xl font-black mb-8 tracking-tight">
+            Level Up Your <br />
+            <span className="text-gradient-orange">Engineering Journey</span>
+          </h1>
+
+          <p className="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto leading-relaxed mb-12">
+            From coding practice to AI-powered interviews, everything you need to master placements in one powerful platform.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <Button
+              onClick={() => navigate("/questions")}
+              className="group text-lg px-12 py-4"
+            >
+              Get Started
+              <FontAwesomeIcon icon={faArrowRight} className="group-hover:translate-x-1 transition-transform" />
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => document.getElementById('features').scrollIntoView({ behavior: 'smooth' })}
+              className="text-lg px-12 py-4"
+            >
+              Explore Features
+            </Button>
+          </div>
+        </motion.div>
       </section>
 
-      <section className="w-full bg-[#1d1d1d] text-white py-24 px-6 min-h-screen">
-        <h2 className="text-3xl md:text-5xl font-bold text-center text-orange-500 mb-16">
-          What We Offer
-        </h2>
+      {/* Features Section */}
+      <section id="features" className="py-32 px-6 bg-[#0a0a0a] relative">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-24"
+          >
+            <h2 className="text-4xl md:text-6xl font-bold mb-6">What We Offer</h2>
+            <div className="w-24 h-1.5 bg-gradient-to-r from-orange-500 to-rose-600 mx-auto rounded-full"></div>
+          </motion.div>
 
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
-          {/* Card 1 */}
-          <div className="bg-[#242424] p-10 rounded-xl shadow-lg border border-gray-700">
-            <div className="flex justify-center mb-6">
-              <div className="bg-[#3a2a20] p-4 rounded-lg text-4xl text-orange-400">
-                <FontAwesomeIcon icon={faBolt} />
-              </div>
-            </div>
-            <h3 className="text-2xl font-semibold text-orange-400 text-center mb-4">
-              Real Coding Environment
-            </h3>
-            <p className="text-gray-300 text-center">
-              Write, run, and test code with a built-in Monaco editor and
-              real-time judge.
-            </p>
-          </div>
-
-          {/* Card 2 */}
-          <div className="bg-[#242424] p-10 rounded-xl shadow-lg border border-gray-700">
-            <div className="flex justify-center mb-6">
-              <div className="bg-[#3a2a20] p-4 rounded-lg text-4xl text-orange-400">
-                <FontAwesomeIcon icon={faShieldHalved} />
-              </div>
-            </div>
-            <h3 className="text-2xl font-semibold text-orange-400 text-center mb-4">
-              AI Interview Simulator
-            </h3>
-            <p className="text-gray-300 text-center">
-              Practice HR & technical interviews with instant scoring and
-              feedback.
-            </p>
-          </div>
-
-          <div className="bg-[#242424] p-10 rounded-xl shadow-lg border border-gray-700">
-            <div className="flex justify-center mb-6">
-              <div className="bg-[#3a2a20] p-4 rounded-lg text-4xl text-orange-400">
-                <FontAwesomeIcon icon={faFilePdf} />
-              </div>
-            </div>
-            <h3 className="text-2xl font-semibold text-orange-400 text-center mb-4">
-              Notes & Study Material
-            </h3>
-            <p className="text-gray-300 text-center">
-              Upload or download high-quality notes and study material.
-            </p>
-          </div>
-
-          <div className="bg-[#242424] p-10 rounded-xl shadow-lg border border-gray-700">
-            <div className="flex justify-center mb-6">
-              <div className="bg-[#3a2a20] p-4 rounded-lg text-4xl text-orange-400">
-                <FontAwesomeIcon icon={faChartLine} />
-              </div>
-            </div>
-            <h3 className="text-2xl font-semibold text-orange-400 text-center mb-4">
-              Real-Time Insights
-            </h3>
-            <p className="text-gray-300 text-center">
-              Track everything with live analytics, dashboards, and performance
-              metrics.
-            </p>
-          </div>
-          {/* Card 3 */}
-          <div className="bg-[#242424] p-10 rounded-xl shadow-lg border border-gray-700">
-            <div className="flex justify-center mb-6">
-              <div className="bg-[#3a2a20] p-4 rounded-lg text-4xl text-orange-400">
-                <FontAwesomeIcon icon={faCloud} />
-              </div>
-            </div>
-            <h3 className="text-2xl font-semibold text-orange-400 text-center mb-4">
-              Cloud Storage
-            </h3>
-            <p className="text-gray-300 text-center">
-              Secure cloud-based saving so your data is always accessible and
-              backed up.
-            </p>
-          </div>
-
-          {/* Card 4 */}
-
-          {/* Card 5 */}
-
-          {/* Card 6 */}
-          <div className="bg-[#242424] p-10 rounded-xl shadow-lg border border-gray-700 relative">
-            {/* Coming Soon Badge */}
-            <span className="absolute top-3 right-3 bg-orange-600 text-white text-xs font-bold px-3 py-1 rounded-full">
-              Coming Soon
-            </span>
-
-            <div className="flex justify-center mb-6">
-              <div className="bg-[#3a2a20] p-4 rounded-lg text-4xl text-orange-400">
-                <FontAwesomeIcon icon={faTrophy} />
-              </div>
-            </div>
-
-            <h3 className="text-2xl font-semibold text-orange-400 text-center mb-4">
-              Coding Contests
-            </h3>
-
-            <p className="text-gray-300 text-center">
-              Participate in contests, rank up, and get detailed performance
-              reports.
-            </p>
-          </div>
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {features.map((feature, idx) => (
+              <motion.div key={idx} variants={itemVariants}>
+                <Card className="h-full group hover:bg-white/[0.02] transition-colors border-white/5">
+                  <CardContent className="flex flex-col items-center text-center">
+                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center text-2xl text-white mb-8 shadow-xl group-hover:scale-110 transition-transform`}>
+                      <FontAwesomeIcon icon={feature.icon} />
+                    </div>
+                    {feature.comingSoon && (
+                      <span className="mb-4 px-3 py-1 rounded-full bg-orange-500/10 text-orange-500 text-xs font-bold uppercase tracking-wider border border-orange-500/20">
+                        Coming Soon
+                      </span>
+                    )}
+                    <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-orange-500 transition-colors">
+                      {feature.title}
+                    </h3>
+                    <p className="text-gray-400 leading-relaxed font-medium">
+                      {feature.desc}
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
     </div>

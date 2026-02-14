@@ -1,22 +1,17 @@
 import React from "react";
-import { useSelector } from "react-redux";
-
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   setIsRunning,
   setIsSubmitting,
   setTestCases,
 } from "../store/utilesSlice";
-import { useState } from "react";
 import { DiffLevelToScoreMapping } from "../constants";
 import toast from "react-hot-toast";
 import { getDomain } from "../utils/helper";
-import { useNavigate } from "react-router-dom";
-
+import { Play, Send, Loader2 } from "lucide-react";
 
 const EditorFooter = ({ code, queId, question }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const language = useSelector((state) => state.utiles.language);
   const isRunning = useSelector((state) => state.utiles.isRunning);
   const isSubmitting = useSelector((state) => state.utiles.isSubmitting);
@@ -30,9 +25,7 @@ const EditorFooter = ({ code, queId, question }) => {
       }
       const res = await fetch(`${getDomain()}/api/question/run`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
           source_code: code,
@@ -44,15 +37,11 @@ const EditorFooter = ({ code, queId, question }) => {
 
       const data = await res.json();
       if (data?.error) {
-        console.log("error : ", data?.error);
         toast.error(data?.error);
-        // navigate("/auth");
         return;
       }
-      // console.log("Response:", data);
       dispatch(setTestCases(data));
     } catch (err) {
-      console.log(err);
       toast.error("error while running the code!");
     } finally {
       dispatch(setIsRunning(false));
@@ -66,12 +55,10 @@ const EditorFooter = ({ code, queId, question }) => {
         return;
       }
       dispatch(setIsSubmitting(true));
-      const { userId } = JSON.parse(localStorage.getItem("user"));
+      const { userId } = JSON.parse(localStorage.getItem("user")) || {};
       const res = await fetch(`${getDomain()}/api/question/submit`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
           source_code: code,
@@ -85,78 +72,49 @@ const EditorFooter = ({ code, queId, question }) => {
 
       const data = await res.json();
       if (data?.error) {
-        console.log("error : ", data?.error);
         toast.error(data?.error);
-        // navigate("/auth");
         return;
       }
-      if (data?.status.isPassed) {
+      if (data?.status?.isPassed) {
         toast.success("All test cases passed!");
       } else {
-        toast.error(`test cases failed! (${data?.status.verdict})`);
+        toast.error(`test cases failed! (${data?.status?.verdict || "Error"})`);
       }
-      if (!data?.results){
-        toast.error("Error while submitting the code!");
-      }
-         dispatch(setTestCases(data?.results));
+      dispatch(setTestCases(data?.results || []));
     } catch (err) {
-      console.log(err);
       toast.error("Error while submitting the code!");
     } finally {
       dispatch(setIsSubmitting(false));
     }
   };
-  return (
-    <div
-      className="min-h-14 bg-[#262626] border-t border-gray-300 
-                flex flex-wrap md:flex-nowrap 
-                items-center justify-end gap-3 px-2 md:px-4"
-    >
-      {!isRunning ? (
-        <button
-          onClick={handleRun}
-          disabled={isSubmitting}
-          className="w-36 h-10 flex items-center gap-2 border  border-blue-400 text-blue-400 px-4 py-2 rounded-lg hover:bg-blue-600 hover:text-white  transition cursor-pointer
-          disabled:border-gray-400 
-    disabled:text-gray-400 
-    disabled:bg-gray-200 
-    disabled:cursor-not-allowed 
-    disabled:hover:bg-gray-200 
-    disabled:hover:text-gray-400"
-        >
-          Compile & Run
-        </button>
-      ) : (
-        <button
-          disabled={isRunning}
-          className="w-36 h-10 flex items-center justify-center gap-2 border  border-blue-400  px-4 py-2 rounded-lg bg-blue-600 text-white  transition disabled:cursor-not-allowed"
-        >
-          {" "}
-          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-        </button>
-      )}
 
-      {!isSubmitting ? (
-        <button
-          disabled={isRunning}
-          onClick={handleSubmit}
-          className={`h-10 w-24 flex items-center gap-2  text-white px-6 py-2 rounded-lg  transition bg-teal-600 hover:bg-teal-700 cursor-pointer
-          disabled:opacity-60 disabled:bg-teal-300 disabled:cursor-not-allowed disabled:text-gray-100
-           `}
-        >
-          Submit
-        </button>
-      ) : (
-        <button
-          disabled={isSubmitting}
-          className="h-10 w-24 flex items-center justify-center gap-2  text-white px-6 py-2 rounded-lg  transition bg-teal-600
-          disabled:cursor-not-allowed "
-        >
-          {" "}
-          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-        </button>
-      )}
-      {/* <button className="px-4 py-1.5 bg-green-600 text-white rounded hover:bg-green-700 text-sm"></button> */}
+  return (
+    <div className="h-16 bg-[#0d0d0d] border-t border-white/5 flex items-center justify-end gap-4 px-6">
+      <button
+        onClick={handleRun}
+        disabled={isRunning || isSubmitting}
+        className="h-10 px-6 rounded-xl border border-white/10 text-gray-400 font-bold text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-white/5 hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+      >
+        {isRunning ? (
+          <Loader2 size={16} className="animate-spin text-orange-500" />
+        ) : (
+          <Play size={16} className="text-orange-500 group-hover:scale-110 transition-transform" />
+        )}
+        {isRunning ? "Running..." : "Run Code"}
+      </button>
+
+      <button
+        onClick={handleSubmit}
+        disabled={isRunning || isSubmitting}
+        className="h-10 px-8 rounded-xl bg-white text-black font-black text-xs uppercase tracking-[0.2em] flex items-center gap-2 hover:bg-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed group transition-shadow hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+      >
+        {isSubmitting ? (
+          <Loader2 size={16} className="animate-spin" />
+        ) : (
+          <Send size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+        )}
+        {isSubmitting ? "Processing" : "Submit"}
+      </button>
     </div>
   );
 };

@@ -1,120 +1,118 @@
 import React, { useEffect, useState } from "react";
 import { getDomain } from "../utils/helper";
-import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  CheckCircle2, 
+  XCircle, 
+  Clock, 
+  Cpu, 
+  Calendar,
+  Layers
+} from "lucide-react";
 import toast from "react-hot-toast";
 
 const Submissions = ({ quesId }) => {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSubmissions = async () => {
       try {
-        const res = await fetch(
-          `${getDomain()}/api/submission/${quesId}`,
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
-
+        const res = await fetch(`${getDomain()}/api/submission/${quesId}`, {
+          method: "GET",
+          credentials: "include",
+        });
         const data = await res.json();
         if (data?.error) {
-          console.log("error : ", data?.error);
           toast.error(data?.error);
-          // navigate("/auth");
           return;
         }
-
-        setSubmissions(data.data);
+        setSubmissions(data.data || []);
       } catch (error) {
-        console.error("Error fetching submissions:", error);
+        toast.error("Failed to load history");
       } finally {
         setLoading(false);
       }
     };
-
-    fetchSubmissions();
+    if (quesId) fetchSubmissions();
   }, [quesId]);
 
-  if (loading) return <div className="p-4 text-gray-300">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="p-8 flex flex-col items-center justify-center gap-4">
+        <div className="w-8 h-8 border-2 border-orange-500/20 border-t-orange-500 rounded-full animate-spin" />
+        <p className="text-gray-500 font-bold text-[10px] uppercase tracking-widest text-center">Syncing Records...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-4 text-sm text-gray-200">
-      <h2 className="font-bold text-xl mb-4 text-white">Your Submissions</h2>
+    <div className="p-8 space-y-8 animate-in fade-in duration-500">
+      <div className="flex items-center justify-between">
+        <h2 className="font-black text-2xl tracking-tight">Submission <span className="text-orange-500">History</span></h2>
+        <div className="px-3 py-1 bg-white/5 border border-white/5 rounded-full text-[10px] font-bold text-gray-500">
+          {submissions.length} Total Attempts
+        </div>
+      </div>
 
       {submissions.length === 0 ? (
-        <div className="text-gray-400">No submissions yet.</div>
+        <div className="text-center py-20 bg-white/5 rounded-[2rem] border border-dashed border-white/10 space-y-4">
+          <Layers size={32} className="mx-auto text-gray-700" />
+          <p className="text-gray-500 font-medium italic text-sm">No deployment records found for this challenge.</p>
+        </div>
       ) : (
-        <div className="w-full border border-gray-700 rounded-lg overflow-hidden bg-[#1e1e1e]">
-          <table className="w-full">
-            {/* Header */}
-            <thead className="bg-[#2c2c2c]">
-              <tr className="text-gray-300 text-left">
-                <th className="p-3 border-b border-gray-700">Status</th>
-                <th className="p-3 border-b border-gray-700">Runtime</th>
-                <th className="p-3 border-b border-gray-700">Memory</th>
-                <th className="p-3 border-b border-gray-700">Language</th>
-                <th className="p-3 border-b border-gray-700">Date</th>
-              </tr>
-            </thead>
-
-            {/* Body */}
-            <tbody>
-              {submissions.map((sub) => (
-                <tr
-                  key={sub._id}
-                  className="hover:bg-[#333333] transition border-b border-gray-800"
-                >
-                  {/* STATUS */}
-                  <td className="p-3 font-semibold">
-                    <span
-                      className={`px-2 py-1 rounded-md text-md font-bold 
-                        ${
-                          sub.status.verdict === "Accepted"
-                            ? " text-green-500"
-                            : "text-red-600"
-                        }
-                      `}
-                    >
-                      {sub.status.verdict}
+        <div className="space-y-4">
+          {submissions.map((sub, idx) => (
+            <motion.div
+              key={sub._id}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: idx * 0.05 }}
+              className="group p-5 bg-white/[0.02] border border-white/5 rounded-[1.5rem] hover:bg-white/[0.04] hover:border-white/10 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6"
+            >
+              <div className="flex items-center gap-4">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                  sub.status.verdict === "Accepted" 
+                    ? "bg-emerald-500/10 text-emerald-500" 
+                    : "bg-rose-500/10 text-rose-500"
+                }`}>
+                  {sub.status.verdict === "Accepted" ? <CheckCircle2 size={20} /> : <XCircle size={20} />}
+                </div>
+                <div>
+                  <h3 className={`font-black uppercase tracking-widest text-xs ${
+                    sub.status.verdict === "Accepted" ? "text-emerald-500" : "text-rose-500"
+                  }`}>
+                    {sub.status.verdict}
+                  </h3>
+                  <div className="flex items-center gap-3 mt-1 text-[10px] font-bold text-gray-500">
+                    <span className="flex items-center gap-1">
+                      <Calendar size={12} className="text-gray-600" />
+                      {new Date(sub.createdAt).toLocaleDateString()}
                     </span>
-                  </td>
+                    <span className="w-1 h-1 bg-gray-700 rounded-full" />
+                    <span>{sub.language?.monaco || "Source"}</span>
+                  </div>
+                </div>
+              </div>
 
-                  {/* RUNTIME */}
-                  <td className="p-3 text-gray-300">
-                    <i
-                      className="fa-solid fa-clock fa-sm"
-                      style={{ color: "#858585" }}
-                    ></i>{" "}
-                    {sub.runtime ? `${sub.runtime} ms` : "-"}
-                  </td>
-
-                  {/* MEMORY */}
-                  <td className="p-3 text-gray-300">
-                    <i
-                      className="fa-solid fa-memory fa-sm"
-                      style={{ color: "#858585" }}
-                    ></i>{" "}
-                    {sub.memory ? `${sub.memory} KB` : "-"}
-                  </td>
-
-                  {/* LANGUAGE */}
-                  <td className="p-3 text-gray-300">
-                    <span className="bg-[#3a3a3a] px-2 py-1 rounded-md text-xs">
-                      {sub.language?.monaco || "-"}
-                    </span>
-                  </td>
-
-                  {/* DATE */}
-                  <td className="p-3 text-gray-400">
-                    {new Date(sub.createdAt).toLocaleString()}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+              <div className="flex items-center gap-8 md:px-6">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1.5 text-gray-400">
+                    <Clock size={12} className="text-orange-500/50" />
+                    <span className="text-sm font-mono font-bold">{sub.runtime ? `${sub.runtime}ms` : "N/A"}</span>
+                  </div>
+                  <p className="text-[9px] font-black uppercase tracking-tighter text-gray-600">Execution</p>
+                </div>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1.5 text-gray-400">
+                    <Cpu size={12} className="text-blue-500/50" />
+                    <span className="text-sm font-mono font-bold">{sub.memory ? `${(sub.memory / 1024).toFixed(1)}MB` : "N/A"}</span>
+                  </div>
+                  <p className="text-[9px] font-black uppercase tracking-tighter text-gray-600">Memory</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
       )}
     </div>

@@ -21,7 +21,7 @@ import Profile from "./pages/Profile";
 
 function App() {
   return (
-    <div className="flex flex-col h-screen  overflow-hidden bg-amber-500">
+    <div className="flex flex-col h-screen overflow-hidden">
       <Router>
         <Navbar />
         
@@ -53,7 +53,7 @@ function App() {
           }}
         />
 
-        <div className="flex-1 pt-16 h-full">
+        <div className="flex-1 h-[calc(100vh-5rem)] mt-20">
           <Routes>
             <Route path="/Auth" element={<AuthPage />} />
             <Route path="/" element={<Home />} />

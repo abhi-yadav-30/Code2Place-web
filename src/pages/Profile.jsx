@@ -1,27 +1,25 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   faUser,
   faCode,
   faCheckCircle,
   faFileAlt,
   faTrophy,
-  faArrowRight,
   faLaptopCode,
   faRobot,
   faChartLine,
-  faPeopleCarryBox,
   faHandHoldingHeart,
+  faCalendarAlt,
+  faExternalLinkAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Card, CardContent } from "../components/UIComponents";
 import { getDomain } from "../utils/helper";
 import toast from "react-hot-toast";
 
 const Profile = () => {
-  // These values will come from backend later
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
@@ -32,17 +30,7 @@ const Profile = () => {
       setquestions(
         showAll ? user.recentlySolved : user.recentlySolved.slice(0, 3)
       );
-  }, [showAll]);
-
-  // const user = {
-  //   name: "Abhinandan",
-  //   email: "abhi@email.com",
-  //   joined: "Jan 2025",
-  //   solved: 42,
-  //   submissions: 125,
-  //   notesUploaded: 9,
-  //   score: 870,
-  // };
+  }, [showAll, user.recentlySolved]);
 
   useEffect(() => {
     fetch(`${getDomain()}/api/user/profile`, {
@@ -51,295 +39,237 @@ const Profile = () => {
       .then(async (res) => {
         const data = await res.json();
         if (data?.error) {
-          console.log("error : ", data?.error);
           toast.error(data?.error);
-          // navigate("/auth");
           return;
         }
-        // console.log(data);
         setUser(data);
-        // console.log(data)
-        setquestions(data.recentlySolved.slice(0, 3));
-
+        setquestions(data.recentlySolved?.slice(0, 3) || []);
         setLoading(false);
       })
       .catch((err) => {
-        // console.log("error :" ,err);
-         if (err) {
-           console.log("error : ", err);
-           toast.error(err);
-           // navigate("/auth");
-          //  return;
-          // setLoading(false);
-          // consolelog("akljfnkljabfk")
-         }
+        toast.error("Failed to load profile");
         setLoading(false);
       });
   }, []);
-  const ShimmerBox = ({ h }) => (
-    <div className={`bg-[#333] animate-pulse rounded-lg w-full ${h}`} />
+
+  const ShimmerBox = ({ h, className = "" }) => (
+    <div className={`bg-white/5 animate-pulse rounded-xl ${h} ${className}`} />
   );
 
-  return (
-    <div className="h-[92vh] bg-[#1c1c1c] text-white p-2 sm:p-6 pb-20 overflow-y-auto">
-      {/* HEADER */}
-      <div className="bg-[#242424] p-2 sm:p-8 rounded-2xl shadow-lg border border-gray-700  mb-4 sm:mb-10">
-        <div className="flex flex-col sm:flex-row  items-center justify-between sm:gap-6">
-          {/* LEFT SIDE (Avatar + Info) */}
-          <div className="flex items-center justify-between  sm:gap-6 w-57 sm:w-105 h-25 ">
-            <div className="bg-orange-500  w-15 h-14 sm:w-20 sm:h-20 rounded-full  flex items-center justify-center text-2xl sm:text-4xl">
-              <FontAwesomeIcon icon={faUser} />
-            </div>
+  const stats = [
+    { icon: faCheckCircle, label: "Solved", key: "uniqueQuestionsSolved", color: "text-emerald-500" },
+    { icon: faCode, label: "Submissions", key: "successfulSubmissions", color: "text-blue-500" },
+    { icon: faFileAlt, label: "Resources", key: "noOfResources", color: "text-rose-500" },
+    { icon: faRobot, label: "Interviews", key: "noOfInterviews", color: "text-purple-500" },
+    { icon: faLaptopCode, label: "Coding Score", key: "codeScore", color: "text-orange-500" },
+    { icon: faHandHoldingHeart, label: "Sharing Score", key: "resourceSharingScore", color: "text-teal-500" },
+    { icon: faChartLine, label: "Interview Score", key: "interviewScore", color: "text-indigo-500" },
+  ];
 
-            <div className="md:w-70 flex flex-col items-center ">
-              {loading ? (
-                <>
-                  <ShimmerBox h="h-6 w-40 mb-3" />
-                  <ShimmerBox h="h-4 w-60 mb-3" />
-                  <ShimmerBox h="h-4 w-60" />
-                </>
-              ) : (
-                <div className="md:w-80">
-                  <h1 className="text-xl sm:text-3xl font-bold">
-                    {user.username}
-                  </h1>
-                  <p className="text-sm sm:text-md text-gray-400">
-                    {user.name}
-                  </p>
-                  <p className="text-sm sm:text-md text-gray-500 ">
-                    Joined:{" "}
-                    {user.createdAt
-                      ? new Date(user.createdAt).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })
-                      : ""}
-                  </p>
+  return (
+    <div className="h-full bg-[#0a0a0a] text-white p-4 md:p-10 pb-24 overflow-y-auto scroll-smooth">
+      <div className="max-w-7xl mx-auto space-y-10">
+        
+        {/* Header Section */}
+        <section className="relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-rose-600/10 blur-3xl -z-10 rounded-3xl"></div>
+          <Card className="border border-white/10">
+            <CardContent className="p-8 md:p-12">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-10">
+                <div className="flex flex-col md:flex-row items-center gap-8">
+                  {loading ? (
+                    <ShimmerBox h="w-24 h-24 sm:w-32 sm:h-32 rounded-full" />
+                  ) : (
+                    <div className="relative group">
+                      <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-rose-600 rounded-full blur-lg opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                      <div className="relative w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-white/20 rounded-full flex items-center justify-center text-4xl sm:text-5xl shadow-2xl">
+                        {user.name ? user.name[0].toUpperCase() : <FontAwesomeIcon icon={faUser} className="text-gray-400" />}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="text-center md:text-left space-y-2">
+                    {loading ? (
+                      <>
+                        <ShimmerBox h="h-10 w-48" />
+                        <ShimmerBox h="h-6 w-32" />
+                      </>
+                    ) : (
+                      <>
+                        <h1 className="text-3xl md:text-5xl font-black tracking-tight">{user.username}</h1>
+                        <p className="text-xl text-gray-400 font-medium">{user.name}</p>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/5 text-sm text-gray-500">
+                          <FontAwesomeIcon icon={faCalendarAlt} className="text-orange-500/70" />
+                          Joined {new Date(user.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
+
+                <div className="relative">
+                  {loading ? (
+                    <ShimmerBox h="h-32 w-48 rounded-3xl" />
+                  ) : (
+                    <div className="bg-gradient-to-br from-orange-500/10 to-rose-600/10 border border-orange-500/20 p-8 rounded-[2.5rem] text-center min-w-[200px] shadow-xl backdrop-blur-sm">
+                      <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-rose-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-orange-500/20">
+                        <FontAwesomeIcon icon={faTrophy} className="text-white text-xl" />
+                      </div>
+                      <h2 className="text-4xl font-black text-white">
+                        {user.codeScore + user.interviewScore + user.resourceSharingScore || 0}
+                      </h2>
+                      <p className="text-orange-500/70 font-bold uppercase tracking-wider text-xs mt-1">Total Rank Score</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Stats Grid */}
+        <section>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+            {stats.map((item, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}
+              >
+                <Card className="h-full border border-white/5 text-center group hover:bg-white/[0.02]">
+                  <CardContent className="p-6">
+                    <div className={`text-2xl mb-4 group-hover:scale-110 transition-transform ${item.color}`}>
+                      <FontAwesomeIcon icon={item.icon} />
+                    </div>
+                    {loading ? (
+                      <ShimmerBox h="h-8 w-12 mx-auto mb-2" />
+                    ) : (
+                      <h3 className="text-2xl font-bold mb-1 tracking-tight">{user[item.key] || 0}</h3>
+                    )}
+                    <p className="text-xs text-gray-500 font-bold uppercase tracking-widest">{item.label}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* Content Section */}
+        <div className="grid lg:grid-cols-3 gap-10">
+          
+          {/* Recent Questions */}
+          <section className="lg:col-span-2 space-y-6">
+            <div className="flex items-center justify-between px-2">
+              <h2 className="text-2xl font-black tracking-tight flex items-center gap-3">
+                <span className="w-2 h-8 bg-orange-500 rounded-full"></span>
+                Solved Challenges
+              </h2>
+              {user.recentlySolved?.length > 3 && (
+                <button
+                  onClick={() => setShowAll(!showAll)}
+                  className="text-orange-500 font-bold text-sm hover:underline"
+                >
+                  {showAll ? "Show Less" : `View All (${user.recentlySolved.length})`}
+                </button>
               )}
             </div>
-          </div>
 
-          {/* RIGHT SIDE (Total Score) */}
-          <div className="text-right">
-            {loading ? (
-              <ShimmerBox h="h-10 w-24" />
-            ) : (
-              <div className="bg-[#242424] p-3 sm:p-8 rounded-xl border border-gray-700 text-center w-[30vh]">
-                <FontAwesomeIcon
-                  icon={faTrophy}
-                  className="text-4xl text-orange-500 mb-1"
-                />
-
-                {loading ? (
-                  <ShimmerBox h="h-6 w-20 mx-auto mb-2" />
-                ) : (
-                  <h2 className="text-3xl font-bold">
-                    {user.codeScore +
-                      user.interviewScore +
-                      user.resourceSharingScore}
-                  </h2>
-                  // <></>
-                )}
-
-                <p className="text-gray-300">Total Score</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* STATS GRID */}
-      <div className=" gap-3 sm:gap-8 max-w-6xl mx-auto justify-center flex flex-wrap">
-        {/* STAT BOX TEMPLATE */}
-        {[
-          {
-            icon: faCheckCircle,
-            label: "Questions Solved",
-            key: "uniqueQuestionsSolved",
-          },
-          {
-            icon: faCode,
-            label: "Submissions Made",
-            key: "successfulSubmissions",
-          },
-          {
-            icon: faFileAlt,
-            label: "Notes Uploaded",
-            key: "noOfResources",
-          },
-          {
-            icon: faRobot,
-            label: "AI Mock Interviews",
-            key: "noOfInterviews",
-          },
-          {
-            icon: faLaptopCode,
-            label: "Coding Score",
-            key: "codeScore",
-          },
-          {
-            icon: faHandHoldingHeart,
-            label: "Resource Sharing Score",
-            key: "resourceSharingScore",
-          },
-          {
-            icon: faChartLine,
-            label: "Interviews Score",
-            key: "interviewScore",
-          },
-        ].map((item, index) => (
-          <div
-            key={index}
-            className="bg-[#242424] p-4 sm:p-8 rounded-xl border border-gray-700 text-center w-40 sm:w-[30vh]"
-          >
-            <FontAwesomeIcon
-              icon={item.icon}
-              className="text-4xl text-orange-500 mb-4"
-            />
-
-            {loading ? (
-              <ShimmerBox h="h-6 w-20 mx-auto mb-2" />
-            ) : (
-              <h2 className="text-3xl font-bold">{user[item.key]}</h2>
-              // <></>
-            )}
-
-            <p className="text-gray-300">{item.label}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* RECENT ACTIVITY */}
-      {Array.isArray(user.recentlySolved) && user.recentlySolved.length > 0 && (
-        <div className="bg-[#242424] p-2 px-4 sm:p-8 sm:px-8 rounded-2xl border border-gray-700 mt-14 max-w-5xl mx-auto shadow-lg">
-          <h2 className="text-xl sm:text-2xl font-semibold mb-6 text-orange-400">
-            Questions Solved By You
-          </h2>
-
-          <div className="space-y-5">
-            {loading ? (
-              <>
-                <ShimmerBox h="h-12" />
-                <ShimmerBox h="h-12" />
-                <ShimmerBox h="h-12" />
-              </>
-            ) : (
-              <>
-                {questions.map((item) => {
-                  return (
-                    <div
-                      key={item._id}
-                      className="flex justify-between items-center bg-[#1f1f1f] p-4 rounded-lg border border-gray-700"
-                    >
-                      <p className="text-gray-300">Solved: {item.QueTitle}</p>
-                      <span
-                        className={`
-        text-xs px-2 py-1 rounded mt-2 inline-block
-        ${
-          item.difficultyLevel === 1
-            ? "bg-green-700 text-green-200"
-            : item.difficultyLevel === 2
-            ? "bg-yellow-700 text-yellow-200"
-            : "bg-red-700 text-red-200"
-        }
-      `}
+            <div className="space-y-4">
+              {loading ? (
+                [1, 2, 3].map((n) => <ShimmerBox key={n} h="h-20" />)
+              ) : (
+                <AnimatePresence mode="popLayout">
+                  {questions.length > 0 ? (
+                    questions.map((item, idx) => (
+                      <motion.div
+                        key={item._id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.1 }}
                       >
-                        {item.difficultyLevel === 1
-                          ? "Easy"
-                          : item.difficultyLevel === 2
-                          ? "Medium"
-                          : "Hard"}
-                      </span>
+                        <Card className="border border-white/5 hover:border-orange-500/30 transition-colors">
+                          <CardContent className="p-5 flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                                item.difficultyLevel === 1 ? 'bg-emerald-500/10 text-emerald-500' :
+                                item.difficultyLevel === 2 ? 'bg-amber-500/10 text-amber-500' :
+                                'bg-rose-500/10 text-rose-500'
+                              }`}>
+                                <FontAwesomeIcon icon={faCode} />
+                              </div>
+                              <h3 className="font-bold text-gray-200">{item.QueTitle}</h3>
+                            </div>
+                            <span className={`text-[10px] sm:text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full border ${
+                              item.difficultyLevel === 1 ? 'border-emerald-500/20 text-emerald-500 bg-emerald-500/5' :
+                              item.difficultyLevel === 2 ? 'border-amber-500/20 text-amber-500 bg-amber-500/5' :
+                              'border-rose-500/20 text-rose-500 bg-rose-500/5'
+                            }`}>
+                              {item.difficultyLevel === 1 ? "Easy" : item.difficultyLevel === 2 ? "Medium" : "Hard"}
+                            </span>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))
+                  ) : (
+                    <div className="text-center py-20 glass rounded-3xl border border-dashed border-white/10">
+                      <p className="text-gray-500 font-medium italic">No challenges solved yet. Time to start!</p>
                     </div>
-                  );
-                })}
-                {user.recentlySolved.length > 3 && (
-                  <button
-                    onClick={() => setShowAll(!showAll)}
-                    className="mt-4 text-blue-200 underline text-sm cursor-pointer"
-                  >
-                    {showAll ? "Show Less" : "Show More"}
-                  </button>
-                )}
-              </>
-            )}
-          </div>
-        </div>
-      )}
-      <div className="bg-[#242424] p-2 px-4 sm:p-8 sm:px-8 rounded-2xl border border-gray-700 mt-14 max-w-5xl mx-auto shadow-lg">
-        <h2 className="text-xl sm:text-2xl font-semibold mb-6 text-orange-400">
-          Resources Uploaded By You
-        </h2>
+                  )}
+                </AnimatePresence>
+              )}
+            </div>
+          </section>
 
-        <div className="space-y-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {loading ? (
-            <>
-              <ShimmerBox h="h-12" />
-              <ShimmerBox h="h-12" />
-              <ShimmerBox h="h-12" />
-            </>
-          ) : (
-            <>
-              {user.resources.map((note) => {
-                return (
-                  // <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-
+          {/* User Resources */}
+          <section className="space-y-6">
+            <h2 className="text-2xl font-black tracking-tight flex items-center gap-3">
+              <span className="w-2 h-8 bg-rose-500 rounded-full"></span>
+              Your Resources
+            </h2>
+            <div className="space-y-4">
+              {loading ? (
+                <ShimmerBox h="h-60" />
+              ) : user.resources?.length > 0 ? (
+                user.resources.map((note, idx) => (
                   <motion.div
                     key={note._id}
-                    initial={{ opacity: 0, scale: 0.9 }}
+                    initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: idx * 0.1 }}
                   >
-                    <Card>
-                      <CardContent>
-                        <iframe
-                          src={`https://docs.google.com/gview?embedded=true&url=${note.fileUrl}`}
-                          className="w-full h-30 rounded-md"
-                        ></iframe>
-
-                        <p className="text-md sm:text-lg font-semibold mt-2">
-                          {note.courseName}
-                        </p>
-
-                        {note.moduleNumber && (
-                          <p className="text-sm">Module: {note.moduleNumber}</p>
-                        )}
-
-                        {note.uploadedBy?.name && (
-                          <p className="text-sm">
-                            Author: {note.uploadedBy.name}
-                          </p>
-                        )}
-
-                        {note.createdAt && (
-                          <p className="text-sm">
-                            Uploaded on:{" "}
-                            {new Date(note.createdAt).toLocaleString("en-IN", {
-                              day: "2-digit",
-                              month: "short",
-                              year: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </p>
-                        )}
-
-                        {/* OPEN PDF */}
-                        <a href={note.fileUrl} target="_blank">
-                          <Button className="mt-3 w-full bg-teal-500 hover:bg-teal-600">
-                            Open PDF
+                    <Card className="border border-white/5 group">
+                      <CardContent className="p-6">
+                        <div className="aspect-video bg-gray-900 rounded-xl mb-4 overflow-hidden relative border border-white/5">
+                          <iframe
+                            src={`https://docs.google.com/gview?embedded=true&url=${note.fileUrl}`}
+                            className="w-full h-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity"
+                            title={note.courseName}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                          <div className="absolute bottom-4 left-4">
+                            <h4 className="font-black text-white">{note.courseName}</h4>
+                            <p className="text-xs text-gray-400">Module {note.moduleNumber}</p>
+                          </div>
+                        </div>
+                        <a href={note.fileUrl} target="_blank" rel="noreferrer" className="w-full">
+                          <Button variant="outline" className="w-full text-xs py-2 shadow-none border-white/10 text-gray-300 hover:text-white hover:border-orange-500/50">
+                            Download / Preview
+                            <FontAwesomeIcon icon={faExternalLinkAlt} size="xs" />
                           </Button>
                         </a>
                       </CardContent>
                     </Card>
                   </motion.div>
+                ))
+              ) : (
+                <div className="text-center py-20 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                  <p className="text-gray-500 text-sm font-medium italic px-6">You haven't uploaded any resources yet.</p>
+                </div>
+              )}
+            </div>
+          </section>
 
-                  // </div>
-                );
-              })}
-            </>
-          )}
         </div>
       </div>
     </div>

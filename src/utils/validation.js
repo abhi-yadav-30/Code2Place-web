@@ -1,6 +1,17 @@
 export const validateEmail = (email) => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(email.trim());
+  if (!regex.test(email.trim())) return false;
+
+  const popularDomains = [
+    "gmail.com",
+    "yahoo.com",
+    "outlook.com",
+    "hotmail.com",
+    "icloud.com",
+    "rvce.edu.in",
+  ];
+  const domain = email.split("@")[1]?.toLowerCase();
+  return popularDomains.includes(domain);
 };
 
 export const validatePassword = (password) => {

@@ -1,9 +1,10 @@
 import { useState } from "react";
-
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function Accordion({ items, openIndex, setOpenIndex }) {
   return (
-    <div className="w-full space-y-2">
+    <div className="w-full space-y-3">
       {items.map((item, index) => (
         <AccordionItem
           key={index}
@@ -20,35 +21,62 @@ export function Accordion({ items, openIndex, setOpenIndex }) {
 
 export function AccordionItem({ title, children, isOpen, onClick }) {
   return (
-    <div className="border border-gray-600 rounded-lg">
+    <div className={`overflow-hidden rounded-2xl transition-all duration-300 ${isOpen ? 'glass border-orange-500/30' : 'bg-white/5 border border-white/5 hover:bg-white/10'}`}>
       <button
-        className="w-full flex justify-between items-center px-4 py-3 bg-[#333] text-white text-lg"
+        className="w-full flex justify-between items-center px-6 py-4 text-left transition-colors"
         onClick={onClick}
       >
-        {title}
-        <span>{isOpen ? "-" : "+"}</span>
+        <span className={`text-lg font-semibold ${isOpen ? 'text-orange-500' : 'text-gray-200'}`}>{title}</span>
+        {isOpen ? <ChevronUp className="text-orange-500" size={20} /> : <ChevronDown className="text-gray-400" size={20} />}
       </button>
 
-      {isOpen && <div className="p-3 bg-[#2d2d2d] text-white">{children}</div>}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            <div className="px-6 pb-5 text-gray-400 leading-relaxed border-t border-white/5 pt-4">
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
-export function Button({ children, onClick, className = "", asChild = false }) {
-  if (asChild) return children;
+
+export function Button({ children, onClick, className = "", variant = "primary", disabled = false }) {
+  const baseStyles = "px-8 py-3 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:pointer-events-none cursor-pointer";
+  
+  const variants = {
+    primary: "bg-gradient-to-r from-orange-500 to-rose-600 text-white shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40",
+    secondary: "bg-white/10 text-white hover:bg-white/20 border border-white/10",
+    outline: "bg-transparent border border-orange-500/50 text-orange-500 hover:bg-orange-500/10",
+    ghost: "bg-transparent text-gray-400 hover:text-white hover:bg-white/5"
+  };
+
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white ${className} cursor-pointer`}
+      disabled={disabled}
+      className={`${baseStyles} ${variants[variant]} ${className}`}
     >
       {children}
     </button>
   );
 }
 
-export function Card({ children }) {
-  return <div className="bg-[#333] rounded-2xl shadow-lg">{children}</div>;
+export function Card({ children, className = "" }) {
+  return (
+    <div className={`glass-card rounded-3xl overflow-hidden ${className}`}>
+      {children}
+    </div>
+  );
 }
 
-export function CardContent({ children }) {
-  return <div className="p-4">{children}</div>;
+export function CardContent({ children, className = "" }) {
+  return <div className={`p-8 ${className}`}>{children}</div>;
 }
