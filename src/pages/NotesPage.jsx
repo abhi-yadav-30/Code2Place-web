@@ -118,7 +118,7 @@ export default function NotesPage() {
                   <div className="h-40 bg-black/40 flex items-center justify-center relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 z-10" />
                     <iframe
-                      src={`https://docs.google.com/gview?embedded=true&url=${note.fileUrl}`}
+                      src={`${getDomain()}${note.fileUrl}`}
                       className="w-full h-full opacity-30 group-hover:opacity-50 transition-opacity pointer-events-none"
                     />
                     <FileText size={48} className="absolute text-orange-500 transition-transform duration-500 group-hover:scale-110 z-20" />
@@ -153,7 +153,7 @@ export default function NotesPage() {
 
                     <div className="pt-4 mt-auto">
                       <a 
-                        href={note.fileUrl} 
+                        href={`${getDomain()}${note.fileUrl}`} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="flex items-center justify-center gap-2 w-full h-12 bg-white text-black rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-200 transition-all"

@@ -11,14 +11,12 @@ import {
 } from "../utils/validation";
 import { GoogleLogin } from "@react-oauth/google";
 import { Button, Card, CardContent } from "../components/UIComponents";
-import { User, Mail, Lock, LogIn, UserPlus, KeyRound, RefreshCw, ArrowLeft, ChevronRight } from "lucide-react";
+import { User, Mail, Lock, LogIn, UserPlus } from "lucide-react";
 
 const AuthPage = () => {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
-  const [showOTPStep, setShowOTPStep] = useState(false);
-  const [otp, setOtp] = useState("");
-  const [verificationEmail, setVerificationEmail] = useState("");
+
 
   const [form, setForm] = useState({
     name: "",
@@ -29,15 +27,7 @@ const AuthPage = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [timer, setTimer] = useState(0);
 
-  useEffect(() => {
-    let interval;
-    if (timer > 0) {
-      interval = setInterval(() => setTimer((t) => t - 1), 1000);
-    }
-    return () => clearInterval(interval);
-  }, [timer]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -66,13 +56,7 @@ const AuthPage = () => {
       });
 
       const data = await res.json();
-      if (data?.unverified) {
-        setVerificationEmail(form.email);
-        setShowOTPStep(true);
-        toast.error("Email not verified. Please check your inbox for OTP.");
-        setLoading(false);
-        return;
-      }
+
 
       if (data?.error) {
         toast.error(data?.error);
@@ -130,9 +114,8 @@ const AuthPage = () => {
         setLoading(false);
         return;
       }
-      setVerificationEmail(form.email);
-      setShowOTPStep(true);
-      toast.success("OTP sent to your email!");
+      toast.success("Registration successful! Please login.");
+      setIsLogin(true);
     } catch (err) {
       toast.error("Registration failed");
       setError("Registration failed. Please try again.");
@@ -140,53 +123,7 @@ const AuthPage = () => {
     setLoading(false);
   };
 
-  const handleVerifyOTP = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const res = await fetch(`${getDomain()}/api/auth/verify-otp`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email: verificationEmail, otp }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        toast.success("Email verified! You can now login.");
-        setShowOTPStep(false);
-        setOtp("");
-        setIsLogin(true);
-      } else {
-        toast.error(data.msg || "Verification failed");
-      }
-    } catch (err) {
-      toast.error("Verification failed");
-    }
-    setLoading(false);
-  };
 
-  const handleResendOTP = async () => {
-    if (timer > 0) return;
-    setLoading(true);
-    try {
-      const res = await fetch(`${getDomain()}/api/auth/resend-otp`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email: verificationEmail }),
-      });
-      if (res.ok) {
-        toast.success("OTP resent!");
-        setTimer(60);
-      } else {
-        const data = await res.json();
-        toast.error(data.msg || "Failed to resend");
-      }
-    } catch (err) {
-      toast.error("Failed to resend");
-    }
-    setLoading(false);
-  };
 
   return (
     <div className="w-full min-h-screen bg-[#0a0a0a] flex items-center justify-center p-4 py-12 relative overflow-y-auto">
@@ -202,7 +139,6 @@ const AuthPage = () => {
         <Card className="border border-white/10 shadow-2xl">
           <CardContent className="p-10">
             <AnimatePresence mode="wait">
-              {!showOTPStep ? (
                 <motion.div
                   key="form-step"
                   initial={{ opacity: 0, x: -20 }}
@@ -339,64 +275,7 @@ const AuthPage = () => {
                     </button>
                   </p>
                 </motion.div>
-              ) : (
-                <motion.div
-                  key="otp-step"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="space-y-8"
-                >
-                  <button 
-                    onClick={() => setShowOTPStep(false)}
-                    className="flex items-center gap-2 text-gray-500 hover:text-white transition-colors text-sm font-bold uppercase tracking-widest"
-                  >
-                    <ArrowLeft size={16} />
-                    Back to Form
-                  </button>
 
-                  <div className="text-center space-y-2">
-                    <h2 className="text-4xl font-black text-white tracking-tight">Verify Email</h2>
-                    <p className="text-gray-400 font-medium">
-                      We sent a 6-digit code to <br />
-                      <span className="text-orange-500 font-bold">{verificationEmail}</span>
-                    </p>
-                  </div>
-
-                  <form onSubmit={handleVerifyOTP} className="space-y-6">
-                    <div className="relative group">
-                      <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-orange-500 transition-colors" size={20} />
-                      <input
-                        type="text"
-                        maxLength={6}
-                        placeholder="Enter 6-digit OTP"
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value)}
-                        className="w-full pl-12 pr-4 py-5 bg-white/5 text-white rounded-xl border border-white/10 focus:border-orange-500/50 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all font-black text-2xl tracking-[0.5em] text-center placeholder:tracking-normal placeholder:text-lg placeholder:font-medium"
-                      />
-                    </div>
-
-                    <Button
-                      disabled={loading || otp.length !== 6}
-                      className="w-full py-4 text-lg"
-                    >
-                      {loading ? "Verifying..." : "Verify & Continue"}
-                      <ChevronRight size={20} />
-                    </Button>
-                  </form>
-
-                  <div className="text-center">
-                    <button
-                      disabled={timer > 0 || loading}
-                      onClick={handleResendOTP}
-                      className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-white disabled:opacity-50 transition-colors"
-                    >
-                      <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
-                      {timer > 0 ? `Resend OTP in ${timer}s` : "Resend Verification Code"}
-                    </button>
-                  </div>
-                </motion.div>
-              )}
             </AnimatePresence>
           </CardContent>
         </Card>

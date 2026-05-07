@@ -108,7 +108,7 @@ const UploadNotesPage = () => {
             <div className="grid gap-6">
               {[
                 { icon: FileText, title: "Standardized Formats", desc: "PDF documentation for maximum cross-platform compatibility." },
-                { icon: CheckCircle2, title: "Verified Assets", desc: "All resources are indexed and verified for academic integrity." }
+                // { icon: CheckCircle2, title: "Verified Assets", desc: "All resources are indexed and verified for academic integrity." }
               ].map((item, i) => (
                 <div key={i} className="flex gap-4 p-6 bg-white/[0.02] border border-white/5 rounded-[2rem]">
                   <div className="w-12 h-12 bg-orange-500/10 rounded-2xl flex items-center justify-center shrink-0">
