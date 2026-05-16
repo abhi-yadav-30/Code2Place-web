@@ -3,6 +3,7 @@ import { Button } from "../components/UIComponents.jsx";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { getDomain } from "../utils/helper.js";
+import React from "react";
 import { 
   FileText, 
   ChevronLeft, 

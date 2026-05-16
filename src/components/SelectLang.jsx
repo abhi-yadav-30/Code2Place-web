@@ -1,5 +1,6 @@
 import { useDispatch } from "react-redux";
 import { setLanguage } from "../store/utilesSlice";
+import React from "react";
 
 export function getDSALanguages() {
   return [

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "../components/UIComponents";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getDomain } from "../utils/helper";

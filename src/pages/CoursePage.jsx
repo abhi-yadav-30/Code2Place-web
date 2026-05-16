@@ -1,5 +1,6 @@
 import { Button, Card, CardContent } from "../components/UIComponents.jsx";
 import { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { getDomain } from "../utils/helper.js";
 import { motion, AnimatePresence } from "framer-motion";

@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import React,{ useEffect, useRef, useState } from "react";
 import { Menu, X, LogOut, User, LayoutDashboard, Database, Brain } from "lucide-react";
 import { getDomain } from "../utils/helper";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,15 +17,15 @@ const Navbar = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [canInstall, setCanInstall] = useState(false);
 
-  useEffect(() => {
-    const handler = (e) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setCanInstall(true);
-    };
-    window.addEventListener("beforeinstallprompt", handler);
-    return () => window.removeEventListener("beforeinstallprompt", handler);
-  }, []);
+  // useEffect(() => {
+  //   const handler = (e) => {
+  //     e.preventDefault();
+  //     setDeferredPrompt(e);
+  //     setCanInstall(true);
+  //   };
+  //   window.addEventListener("beforeinstallprompt", handler);
+  //   return () => window.removeEventListener("beforeinstallprompt", handler);
+  // }, []);
 
   const installApp = async () => {
     if (!deferredPrompt) return;

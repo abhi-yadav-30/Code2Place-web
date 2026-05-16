@@ -1,5 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+
   theme: {
     extend: {
       screens: {
@@ -8,6 +13,10 @@ module.exports = {
         "h-lg": { raw: "(min-height: 801px)" },
       },
     },
+  },plugins: [
+    require('daisyui')
+  ],
+  daisyui: {
+    themes: ["emerald"], 
   },
-  plugins: [],
 };

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";

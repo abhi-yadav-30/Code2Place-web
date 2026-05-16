@@ -1,5 +1,7 @@
 export const getDomain = () => {
+  console.log(import.meta.env.VITE_MODE);
   if (import.meta.env.VITE_MODE == "dev") {
+    
     const hostname = window.location.hostname;
 console.log(hostname)
     if (hostname === "localhost" || hostname === "127.0.0.1") {

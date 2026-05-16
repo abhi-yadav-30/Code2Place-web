@@ -1,5 +1,6 @@
 import toast from "react-hot-toast";
 import { Navigate } from "react-router-dom";
+import React from "react";
 
 const ProtectedRoute = ({ children }) => {
   const user = JSON.parse(localStorage.getItem("user")); // stored after login
