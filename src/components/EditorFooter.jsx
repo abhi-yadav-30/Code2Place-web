@@ -89,7 +89,7 @@ const EditorFooter = ({ code, queId, question }) => {
   };
 
   return (
-    <div className="h-16 bg-[#0d0d0d] border-t border-white/5 flex items-center justify-end gap-4 px-6">
+    <div className="h-16 shrink-0 w-full bg-[#0d0d0d] border-t border-white/5 flex items-center justify-end gap-4 px-6">
       <button
         onClick={handleRun}
         disabled={isRunning || isSubmitting}

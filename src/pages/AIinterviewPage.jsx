@@ -246,30 +246,31 @@ const AIinterviewPage = () => {
                 </div>
               )}
               
-              {/* Overlay Controls */}
-              {camera && (
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 p-1.5 glass rounded-2xl border border-white/10 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                  <button 
-                    onClick={startRecording}
-                    disabled={isRecording}
-                    className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
-                      isRecording ? 'bg-gray-700 cursor-not-allowed' : 'bg-orange-500 hover:bg-orange-600'
-                    }`}
-                  >
-                    <Mic size={20} />
-                  </button>
-                  <button 
-                    onClick={stopRecording}
-                    disabled={!isRecording}
-                    className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
-                      !isRecording ? 'bg-gray-700 cursor-not-allowed' : 'bg-rose-600 animate-pulse'
-                    }`}
-                  >
-                    <MicOff size={20} />
-                  </button>
-                </div>
-              )}
             </div>
+
+            {/* External Controls */}
+            {camera && (
+              <div className="flex items-center justify-center gap-4">
+                <button 
+                  onClick={startRecording}
+                  disabled={isRecording}
+                  className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-lg border border-white/10 ${
+                    isRecording ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-orange-500 text-white hover:bg-orange-600 hover:-translate-y-1'
+                  }`}
+                >
+                  <Mic size={24} />
+                </button>
+                <button 
+                  onClick={stopRecording}
+                  disabled={!isRecording}
+                  className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-lg border border-white/10 ${
+                    !isRecording ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-rose-600 text-white animate-pulse hover:bg-rose-700'
+                  }`}
+                >
+                  <MicOff size={24} />
+                </button>
+              </div>
+            )}
 
             <div className="p-5 bg-white/[0.02] rounded-2xl border border-white/5 space-y-3">
               <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-orange-500/50">

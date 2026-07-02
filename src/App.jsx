@@ -22,7 +22,7 @@ import Profile from "./pages/Profile";
 
 function App() {
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className="flex flex-col h-[100dvh] overflow-hidden">
       <Router>
         <Navbar />
         

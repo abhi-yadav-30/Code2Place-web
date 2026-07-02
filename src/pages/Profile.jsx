@@ -242,7 +242,7 @@ const Profile = () => {
                       <CardContent className="p-6">
                         <div className="aspect-video bg-gray-900 rounded-xl mb-4 overflow-hidden relative border border-white/5">
                           <iframe
-                            src={`${getDomain()}${note.fileUrl}`}
+                            src={note.fileUrl.startsWith('http') ? note.fileUrl : `${getDomain()}${note.fileUrl}`}
                             className="w-full h-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity"
                             title={note.courseName}
                           />
@@ -252,7 +252,7 @@ const Profile = () => {
                             <p className="text-xs text-gray-400">Module {note.moduleNumber}</p>
                           </div>
                         </div>
-                        <a href={`${getDomain()}${note.fileUrl}`} target="_blank" rel="noreferrer" className="w-full">
+                        <a href={note.fileUrl.startsWith('http') ? note.fileUrl : `${getDomain()}${note.fileUrl}`} target="_blank" rel="noreferrer" className="w-full">
                           <Button variant="outline" className="w-full text-xs py-2 shadow-none border-white/10 text-gray-300 hover:text-white hover:border-orange-500/50">
                             Download / Preview
                             <FontAwesomeIcon icon={faExternalLinkAlt} size="xs" />

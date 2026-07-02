@@ -17,15 +17,15 @@ const Navbar = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [canInstall, setCanInstall] = useState(false);
 
-  // useEffect(() => {
-  //   const handler = (e) => {
-  //     e.preventDefault();
-  //     setDeferredPrompt(e);
-  //     setCanInstall(true);
-  //   };
-  //   window.addEventListener("beforeinstallprompt", handler);
-  //   return () => window.removeEventListener("beforeinstallprompt", handler);
-  // }, []);
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setCanInstall(true);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
 
   const installApp = async () => {
     if (!deferredPrompt) return;
@@ -203,7 +203,7 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="absolute top-20 left-4 right-4 glass border border-white/10 rounded-3xl overflow-hidden md:hidden shadow-2xl z-50 p-4"
+            className="absolute top-20 left-4 right-4 bg-[#111111]/95 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden md:hidden shadow-2xl shadow-black/60 z-50 p-4"
           >
             <div className="flex flex-col gap-2">
               {navLinks.map((link) => (
