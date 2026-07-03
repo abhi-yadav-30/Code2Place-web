@@ -19,6 +19,8 @@ import CoursesPage from "./pages/CoursePage";
 import Home from "./pages/Home";
 import { Toaster } from "react-hot-toast";
 import Profile from "./pages/Profile";
+import PricingPage from "./pages/PricingPage";
+import PaymentPage from "./pages/PaymentPage";
 
 function App() {
   return (
@@ -147,6 +149,23 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/pricing"
+              element={
+                <ProtectedRoute>
+                  <PricingPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/payment"
+              element={
+                <ProtectedRoute>
+                  <PaymentPage />
+                </ProtectedRoute>
+              }
+            />
+
           </Routes>
           {/* </div> */}
         </div>

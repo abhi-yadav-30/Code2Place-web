@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,17 +7,25 @@ import {
   Brain,
   History,
   PlayCircle,
-  Settings,
   ChevronRight,
   Target,
   ShieldCheck,
   X,
+  Lock,
+  Crown,
 } from "lucide-react";
 import { Button, Card, CardContent } from "../components/UIComponents";
+import { useDispatch, useSelector } from "react-redux";
+import { setSubscription } from "../store/utilesSlice";
+
+const API = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 const AIInterviewHomePage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const isPro = useSelector((s) => s.utiles.isPro);
   const [openModal, setOpenModal] = useState(false);
+  const [checkingStatus, setCheckingStatus] = useState(true);
 
   const [role, setRole] = useState("");
   const [jobDesc, setJobDesc] = useState("");
@@ -25,7 +33,37 @@ const AIInterviewHomePage = () => {
   const [difficulty, setDifficulty] = useState("medium");
   const [errors, setErrors] = useState({});
 
+  // Check subscription status on page load
+  useEffect(() => {
+    const fetchStatus = async () => {
+      try {
+        const res = await fetch(`${API}/api/subscription/status`, {
+          credentials: "include",
+        });
+        if (res.ok) {
+          const data = await res.json();
+          dispatch(
+            setSubscription({
+              isPro: data.isPro,
+              plan: data.plan,
+              subscriptionExpiresAt: data.subscriptionExpiresAt,
+            })
+          );
+        }
+      } catch (_) {
+        // silently fail — leave isPro as false
+      } finally {
+        setCheckingStatus(false);
+      }
+    };
+    fetchStatus();
+  }, []);
+
   const handleStart = () => {
+    if (!isPro) {
+      navigate("/pricing");
+      return;
+    }
     if (!role.trim()) {
       setErrors((prev) => ({ ...prev, role: "Role field is mandatory" }));
       return;
@@ -82,7 +120,6 @@ const AIInterviewHomePage = () => {
         >
           <Card className="border border-white/5 bg-white/[0.01]">
             <CardContent className="p-5 md:p-10">
-              {/* On mobile: stacked. On md+: side-by-side */}
               <div className="flex flex-col md:grid md:grid-cols-2 md:gap-12 md:items-center gap-8">
 
                 {/* Steps */}
@@ -112,10 +149,23 @@ const AIInterviewHomePage = () => {
                     Configure your session to get the most accurate simulation.
                     Practice HR, Technical, or Managerial rounds.
                   </p>
+
+                  {/* Pro badge if not subscribed */}
+                  {!checkingStatus && !isPro && (
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-xs font-bold">
+                      <Crown size={13} />
+                      Pro feature — upgrade to access AI Interview
+                    </div>
+                  )}
+
                   <div className="space-y-2 pt-1">
-                    <Button onClick={() => setOpenModal(true)} className="w-full">
-                      Start Interview
-                      <PlayCircle size={18} />
+                    <Button
+                      onClick={() => isPro ? setOpenModal(true) : navigate("/pricing")}
+                      className="w-full relative"
+                    >
+                      {!isPro && <Lock size={15} className="absolute left-4" />}
+                      {isPro ? "Start Interview" : "Unlock AI Interview"}
+                      {isPro ? <PlayCircle size={18} /> : <Crown size={18} />}
                     </Button>
                     <button
                       onClick={() => navigate("/ai-interview/transcription")}
@@ -133,7 +183,7 @@ const AIInterviewHomePage = () => {
         </motion.div>
       </div>
 
-      {/* ── Session Config Modal ── */}
+      {/* ── Session Config Modal (only shown when isPro) ── */}
       <AnimatePresence>
         {openModal && (
           <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
@@ -146,7 +196,6 @@ const AIInterviewHomePage = () => {
               className="absolute inset-0 bg-black/80 backdrop-blur-md"
             />
 
-            {/* Sheet slides up on mobile, centered card on sm+ */}
             <motion.div
               initial={{ opacity: 0, y: 60 }}
               animate={{ opacity: 1, y: 0 }}
@@ -204,7 +253,7 @@ const AIInterviewHomePage = () => {
                       />
                     </div>
 
-                    {/* Round + Intensity — stack on mobile */}
+                    {/* Round + Intensity */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Round Type</label>
