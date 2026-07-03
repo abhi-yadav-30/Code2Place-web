@@ -17,8 +17,9 @@ import {
 import { Button, Card, CardContent } from "../components/UIComponents";
 import { useDispatch, useSelector } from "react-redux";
 import { setSubscription } from "../store/utilesSlice";
+import { getDomain } from "../utils/helper";
 
-const API = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+const API = getDomain();
 
 const AIInterviewHomePage = () => {
   const navigate = useNavigate();

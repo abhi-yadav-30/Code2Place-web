@@ -17,8 +17,9 @@ import {
 import { useDispatch } from "react-redux";
 import { setSubscription } from "../store/utilesSlice";
 import toast from "react-hot-toast";
+import { getDomain } from "../utils/helper";
 
-const API = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+const API = getDomain();
 
 const PLAN_META = {
   monthly: {
